@@ -1,5 +1,5 @@
 #ifndef baseField_H
-#define baseField.H
+#define baseField_H
 
 namespace Koala
 {
