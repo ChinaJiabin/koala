@@ -9,7 +9,7 @@ parRun::parRun()
 {
   if ( ( path = getcwd(NULL, 0) ) == NULL )
   {
-    std::count<< "Error: getcwd()" << std::endl;
+    std::cout<< "Error: getcwd()" << std::endl;
     exit(1);
   }
 }
