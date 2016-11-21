@@ -63,4 +63,26 @@ void openFile
     exit(1);
   }
 } 
+
+// IO: write file
+void openFile
+(
+  std::ofstream& file    ,
+  const char* fileName   ,
+  const char* fileSuffix ,
+  const char* filePath
+) const
+{
+  if (file.is_open())
+    file.close();
+
+  file.open(getFileFullPath(fileName, fileSuffix, filePath).data());
+  if (file.is_open())
+  {
+    std::cout<< "File path "
+             << getFileFullPath(NULL, NULL, filePath).data()
+             << std::endl;
+    exit(1);
+  }
+} 
 }
