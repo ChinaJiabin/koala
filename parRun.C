@@ -41,4 +41,26 @@ std::string parRun::getFileFullPath
 
   return fileFullPath;
 }
+
+// IO: read file
+void openFile
+(
+  std::ifstream& file    ,
+  const char* fileName   ,
+  const char* fileSuffix ,
+  const char* filePath
+) const
+{
+  if (file.is_open())
+    file.close();
+
+  file.open(getFileFullPath(fileName, fileSuffix, filePath).data());
+  if (file.is_open())
+  {
+    std::cout<< "Can't not find "
+             << getFileFullPath(fileName, fileSuffix, filePath).data()
+             << std::endl;
+    exit(1);
+  }
+} 
 }
