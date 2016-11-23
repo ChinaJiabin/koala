@@ -73,6 +73,49 @@ public:
 
 protected:
     // Functions used to create points
+
+        /*
+          Points distribution on [0, 1] interval
+          Type:  
+                0: Equal ratio distribution
+                1: Central equal ratio distribution
+        */
+        void equalRatioDistribution1D
+        (
+          double* map         ,
+          const int& size     ,
+          const double& ratio ,  
+          const int& type = 0
+        ) const;
+
+        void lineMap1D
+        (
+          const double* startPoint ,
+          const double* endPoint   ,
+          double* points           ,
+          const int& size          ,    
+          const int& dim           ,
+          const double& ratio = 0  ,
+          const int& type = 0
+        ) const;
+
+        void arcMap1D
+        (
+          const double* startPoint ,
+          const double* endPoint   ,
+          double* points           ,
+          const int& size          ,    
+          const double& angle      ,
+          const double& ratio = 0  ,
+          const int& type = 0
+        ) const;
+
+        void givenPointsMap1D
+        (
+          double* points            ,
+          const double* givenPoints ,
+          const int& size
+        ) const;
 };
 }
 
