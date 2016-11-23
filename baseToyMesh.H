@@ -42,7 +42,7 @@ protected:
         int sizeInnerFaces;
         
         int* pointsOnLinesIndex;
-        int* pointsInBlockIndex;
+        int* pointsInBlocksIndex;
         int* cellsIndex;
         
         int sizePatches;
