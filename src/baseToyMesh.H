@@ -67,7 +67,7 @@ public:
         virtual void writeCells()  const = 0; 
         virtual void writeFaces()  const = 0;  
 
-        virtual void writeBoundary()         const;
+        virtual void writeBoundaryName()     const;
         virtual void writeBoundaryPointsId() const = 0;
         virtual void writeBoundaryFacesId()  const = 0;
 
