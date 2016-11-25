@@ -38,23 +38,38 @@ private:
         // Restriction operator
         double restriction
         (
-          const int& nX       ,
-          const int& nY       ,
-          double* residual    ,
+          const int& nX    ,
+          const int& nY    ,
+          double* residual ,
           const int& numGap = 2
         ) const;
 
         // Prolongation operator
         double prolongation
         (
-          const int& nX       ,
-          const int& nY       ,
-          double* residual    ,
+          const int& nX    ,
+          const int& nY    ,
+          double* residual ,
           const int& numGap = 2
         ) const;
 
 public:
-        //Constructor
+    //Constructor
+
+        toyMesh2D
+        (
+          const parRun& Run ,
+          const char* inputFileName_ = "toyMesh"
+        );
+
+    // Write
+
+        virtual void writePoints() const; 
+        virtual void writeCells()  const; 
+        virtual void writeFaces()  const;  
+
+        virtual void writeBoundaryPointsId() const;
+        virtual void writeBoundaryFacesId()  const;
 };
 }
 
