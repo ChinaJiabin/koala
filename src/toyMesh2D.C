@@ -7,8 +7,7 @@ namespace Koala
 
 parBlock2D::parBlock2D()
 {
-  // Suggest: Type use char instead of int
-  type = new int[4];
+  type = new int[4]; // Suggest: Type use char instead of int
   n    = new int[2];
 
   memset(type, 0, 4*sizeof(int));
