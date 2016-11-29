@@ -53,7 +53,7 @@ toyMesh2D::toyMesh2D
   // Read parameters of lines
   parLinesIndex    = new int[4*sizeBlocks + 1];
   parLinesIndex[0] = 0;
-  for（int i = 0; i < 4*sizeBlocks + 1; i++)
+  for（int i = 1; i < 4*sizeBlocks + 1; i++)
   {
     file >> parLinesIndex[i];
     parLinesIndex[i] += parLinesIndex[i - 1];
@@ -63,5 +63,43 @@ toyMesh2D::toyMesh2D
   for（int i = 0; i < parLinesIndex[4*sizeBlocks]; i++)
     file >> parLines[i];
 
+  // Boundary
+  file >> sizePatches;
+  boundaryFacesIndex    = new int[sizePatches + 1];
+  boundaryFacesIndex[0] = 0;
+  for (int i = 1; i < sizePatches + 1; i++)
+  {
+    file >> boundaryFacesIndex[i];
+    boundaryFacesIndex[i] += boundaryFacesIndex[i - 1];
+  }
+
+  boundaryFaces = new int[2*boundaryFacesIndex[sizePatches]][2];
+  for (int i = 0; i < sizePatches; i++)
+  { 
+    std::string patchName;
+    file >> patchName;
+    patchesName += patchName;
+    patchesName.append("\n");
+  }
+
+  for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+  {
+    file >> boundaryFaces[j][0];
+    file >> boundaryFaces[j][1];
+  }
+
+  // Loop blocks
+  lines = new int[4*sizeBlocks][5];
+  sizePoints     = 0;
+  sizeCells      = 0;
+  sizeInnerFaces = 0;
+  sizeLines      = 0;  
+
+  cellsIndex    = new int[sizeBlocks + 1];
+  cellsIndex[0] = 0;
+
+  for (int = 0; i < sizeBlocks; i++)
+  {
+  }
 }
 }
