@@ -97,7 +97,7 @@ toyMesh2D::toyMesh2D
   cellsIndex[0] = 0;
 
   lines = new int[4*sizeBlocks][5];
-M
+
   for (int = 0; i < sizeBlocks; i++)
   {
     sizePoints     += parBlocks[i].SizePoints();
