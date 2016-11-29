@@ -113,7 +113,7 @@ M
       blockLines[j][0] = blockPointsId[j];         // First points Id of line
       blockLines[j][1] = blockPointsId[(j + 1)%4]; // Second point Id of line
       blockLines[j][2] = ++sizeLines;              // Id
-      blockLines[j][3] = -1;                       // Line Id(0,1,2,3) in neighbor block
+      blockLines[j][3] = -1;                       // Line Id(0,1,2,3) in neighbour block
       blockLines[j][4] = -1;                       // Neighbour block Id
     }
   }
