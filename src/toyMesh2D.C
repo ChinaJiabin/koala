@@ -89,8 +89,7 @@ toyMesh2D::toyMesh2D
   }
 
   // Loop blocks
-  lines = new int[4*sizeBlocks][5];
-  sizePoints     = 0;
+  sizePoints     = sizePointsOfBlocks;
   sizeCells      = 0;
   sizeInnerFaces = 0;
   sizeLines      = 0;  
@@ -98,8 +97,26 @@ toyMesh2D::toyMesh2D
   cellsIndex    = new int[sizeBlocks + 1];
   cellsIndex[0] = 0;
 
+  lines = new int[4*sizeBlocks][5];
+M
   for (int = 0; i < sizeBlocks; i++)
   {
+    sizePoints     += parBlocks[i].SizePoints();
+    sizeCells      += parBlocks[i].SizeCells();
+    sizeInnerFaces += parBlocks[i].SizeInnerFaces();
+
+    cellsIndex[i + 1] = sizeCells;
+ 
+    int*        blockPointsId = &blocks[4*i];
+    listLines2D blockLines    = &lines[4*i];
+    for ( j = 0; j < 4; j++)
+    {
+      blockLines[j][0] = blockPointsId[j];         // First points Id of line
+      blockLines[j][1] = blockPointsId[(j + 1)%4]; // Second point Id of line
+      blockLines[j][2] = ++sizeLines;              // Id
+      blockLines[j][3] = -1;                       // Line Id(0,1,2,3) in neighbor block
+      blockLines[j][4] = -1;                       // Neighbour block Id
+    }
   }
 }
 }
