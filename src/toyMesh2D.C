@@ -115,6 +115,24 @@ toyMesh2D::toyMesh2D
       blockLines[j][2] = ++sizeLines;              // Id
       blockLines[j][3] = -1;                       // Line Id(0,1,2,3) in neighbour block
       blockLines[j][4] = -1;                       // Neighbour block Id
+      
+      for (int k = 0; k < 4*i; k++)
+        if (lines[k][0] == blockLines[j][1] && lines[k][1] == blockLines[j][0])
+        {
+          lines[k][3] = j;
+          lines[k][4] = i;
+          
+          blockLines[j][2] = -lines[k][2];
+          blockLines[j][3] = k%4;
+          blockLines[j][4] = k/4;
+          
+          int subscript = j%2;
+          sizePoints     -= (parBlocks[i].n[subscript] - 1);
+          sizeInnerFaces += parBlocks[i].n[subscript];
+            
+          sizeLines--;
+          break;
+        }
     }
   }
 }
