@@ -16,11 +16,13 @@ public:
 
     // inline
  
-        inline int SizePoints()     const{ return (n[0] + 1)*(n[1] + 1) - 4 ; }
+        inline int SizePoints()      const{ return (n[0] + 1)*(n[1] + 1); }
 
-        inline int SizeCells()      const{ return n[0]*n[1]; }
+        inline int SizeCells()       const{ return n[0]*n[1]; }
+        
+        inline int SizeInnerPoints() const{ return (n[0] - 1)*(n[1] - 1); }
 
-        inline int SizeInnerFaces() const{ return n[0]*(n[1] - 1) + n[1]*(n[0] - 1); }
+        inline int SizeInnerFaces()  const{ return n[0]*(n[1] - 1) + n[1]*(n[0] - 1); }
 };
 
 typedef int (*listLines2D)[5];
