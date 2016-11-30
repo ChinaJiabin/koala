@@ -135,5 +135,34 @@ toyMesh2D::toyMesh2D
         }
     }
   }
+    
+  // Index of points on lines
+  pointsOnLinesIndex    = new int[sizeLines + 1];
+  pointsOnLinesIndex[0] = sizePointsOfBlocks;
+  int trackingId        = sizePointsOfBlocks;
+  for (int = 0; i < 4*sizeBlocks; i++)
+  {
+    if (lines[i][2] < 0)
+      continue;
+    
+    int numPoints = parBlocks[i/4].n[i%2] - 1;
+    if (!numPoints)
+    {
+      pointsOnLinesIndex[lines[i][2]] = pointsOnLinesIndex[lines[i][2] - 1];
+      continue;
+    }
+    
+    trackingId += numPoints;
+    pointsOnLinesIndex[lines[i][2]] = trackingId;                           
+  }
+    
+  // Index of points in blocks
+  pointsInBlocksIndex = new int[sizeBlocks + 1];
+  for (int = 0; i < sizeBlocks; i++)
+  {
+    pointsInBlocksIndex[i] = trackingId;
+    trackingId += parBlocks[i].SizeInnerPoints();
+  }
+  pointsInBlocksIndex[sizeBlocks] = trackingId;
 }
 }
