@@ -100,7 +100,7 @@ toyMesh2D::toyMesh2D
 
   for (int = 0; i < sizeBlocks; i++)
   {
-    sizePoints     += parBlocks[i].SizePoints();
+    sizePoints     += parBlocks[i].SizePoints() - 4;
     sizeCells      += parBlocks[i].SizeCells();
     sizeInnerFaces += parBlocks[i].SizeInnerFaces();
 
