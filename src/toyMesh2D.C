@@ -264,6 +264,54 @@ double toyMesh2D::restriction
   const int& numGap
 ) const
 {
+  int numPointsX     = (nX + 1);
+  int numGapPointsX  = numGap*numPointsX;
+  int numTotalPoints = numPointsX*(nY + 1);
+  
+  for (int i = numGap; i + numGap <= nY; i += numGap)
+    for (int j = numGap; j + numGap <= nX; j += numGap)
+    {
+      // 0. 9 around points address
+      int id_x = j + i*numPointsX;
+      
+      int id_x_right = id_x + numGap;
+      int id_x_left  = id_x - numGap;
+      int id_x_up    = id_x + numGapPointsX;
+      int id_x_down  = id_x - numGapPointsX;
+      
+      int id_x_right_up   = id_x_up + numGap;
+      int id_x_left_up    = id_x_up - numGap;
+      int id_x_right_down = id_x_down + numGap;
+      int id_x_left_down  = id_x_down - numGap;
+      
+      residual[id_x] = (
+        residual[id_x] + ( 
+          residual[id_x_right] + 
+          residual[id_x_left]  + 
+          residual[id_x_up]    + 
+          residual[id_x_down]
+        )/2.0 + (
+          residual[id_x_right_up]   + 
+          residual[id_x_left_up]    + 
+          residual[id_x_right_down] + 
+          residual[id_x_left_down]
+        )/4.0
+      )/4.0;
+      
+      residual[id_x + numTotalPoints] = (
+        residual[id_x + numTotalPoints] + ( 
+          residual[id_x_right + numTotalPoints] + 
+          residual[id_x_left  + numTotalPoints] + 
+          residual[id_x_up    + numTotalPoints] + 
+          residual[id_x_down  + numTotalPoints]
+        )/2.0 + (
+          residual[id_x_right_up   + numTotalPoints] + 
+          residual[id_x_left_up    + numTotalPoints] + 
+          residual[id_x_right_down + numTotalPoints] + 
+          residual[id_x_left_down  + numTotalPoints]
+        )/4.0
+      )/4.0;
+    ｝
 }
 
 double toyMesh2D::prolongation
