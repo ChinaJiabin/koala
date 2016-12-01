@@ -175,13 +175,38 @@ double toyMesh2D::smoothEllipticEquation
   const int& numGap
 ) const
 {
-  int numPointsX = (nX + 1);
+  int numPointsX     = (nX + 1);
+  int numGapPointsX  = numGap*numPointsX;
   int numTotalPoints = numPointsX*(nY + 1);
   
   double error = 0;
   for (int i = numGap; i + numGap <= nY; i += numGap)
     for (int j = numGap; j + numGap <= nX; j += numGap)
     {
+      // 0. 9 around points address
+      
+      int id_x = j + i*numPointsX;
+      int id_y = id_x + numTotalPoints;
+      
+      int id_x_right = id_x + numGap;
+      int id_x_left  = id_x - numGap;
+      int id_x_up    = id_x + numGapPointsX;
+      int id_x_down  = id_x - numGapPointsX;
+      
+      int id_y_right = id_x_right + numTotalPoints;
+      int id_y_left  = id_x_left  + numTotalPoints;
+      int id_y_up    = id_x_up    + numTotalPoints;
+      int id_y_down  = id_x_down  + numTotalPoints;
+      
+      int id_x_right_up   = id_x_up + numGap;
+      int id_x_left_up    = id_x_up - numGap;
+      int id_x_right_down = id_x_down + numGap;
+      int id_x_left_down  = id_x_down - numGap;
+      
+      int id_y_right_up   = id_x_right_up   + numTotalPoints;
+      int id_y_left_up    = id_x_left_up    + numTotalPoints;
+      int id_y_right_down = id_x_right_down + numTotalPoints;
+      int id_y_left_down  = id_x_left_down  + numTotalPoints;
     }
   return error;
 }
