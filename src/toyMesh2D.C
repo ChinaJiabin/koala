@@ -323,4 +323,29 @@ double toyMesh2D::prolongation
 ) const
 {
 }
+  
+void toyMesh2D::writePoints() const
+{
+  // New points array
+  double points[sizePoints][2];
+  
+  // Block points
+  for (int i = 0; i < sizePointsOfBlocks; i++)
+    for (int j = 0; j < 2; j++)
+      points[i][j] = pointsOfBlocks[i][j];
+}
+  
+void toyMesh2D::writeCells() const
+{
+}
+  
+void toyMesh2D::writeFaces() const
+{
+}
+
+void toyMesh2D::writeBoundaryPointsId() const
+{
+}
+  
+void toyMesh2D::writeBoundaryFacesId() const
 }
