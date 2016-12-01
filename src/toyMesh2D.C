@@ -184,7 +184,6 @@ double toyMesh2D::smoothEllipticEquation
     for (int j = numGap; j + numGap <= nX; j += numGap)
     {
       // 0. 9 around points address
-      
       int id_x = j + i*numPointsX;
       int id_y = id_x + numTotalPoints;
       
@@ -207,6 +206,52 @@ double toyMesh2D::smoothEllipticEquation
       int id_y_left_up    = id_x_left_up    + numTotalPoints;
       int id_y_right_down = id_x_right_down + numTotalPoints;
       int id_y_left_down  = id_x_left_down  + numTotalPoints;
+      
+      // 1. alpha, beta, gamma coefficient
+      double alpha = (
+        pow((coordinates[id_x_up] - coordinates[id_x_down]), 2) +
+        pow((coordinates[id_y_up] - coordinates[id_y_down]), 2)
+      )/4.0;
+      
+      double beta = (
+        (coordinates[id_x_up]    - coordinates[id_x_down])*
+        (coordinates[id_x_right] - coordinates[id_x_left])
+        +
+        (coordinates[id_y_up]    - coordinates[id_y_down])*
+        (coordinates[id_y_right] - coordinates[id_y_left])
+      )/4.0;
+      
+      double gamma = (
+        pow((coordinates[id_x_right] - coordinates[id_x_left]), 2) +
+        pow((coordinates[id_y_right] - coordinates[id_y_left]), 2)
+      )/4.0;
+      
+      // Update
+      double coordinateOld_x = coordinates[id_x];
+      double coordinateOld_y = coordinates[id_y];
+      
+      coordinates[id_x] = (
+        alpha*(coordinates[id_x_left] + coordinates[id_x_right]) +
+        gamma*(coordinates[id_x_down] + coordinates[id_x_up]     -
+        beta*(
+          (coordinates[id_x_right_up]   + coordinates[id_x_left_down]) -
+          (coordinates[id_x_right_down] + coordinates[id_x_left_up])
+        )/2.0
+      )/( 2.0*(alpha + gamma) );
+        
+      coordinates[id_y] = (
+        alpha*(coordinates[id_y_left] + coordinates[id_y_right]) +
+        gamma*(coordinates[id_y_down] + coordinates[id_y_up]     -
+        beta*(
+          (coordinates[id_y_right_up]   + coordinates[id_y_left_down]) -
+          (coordinates[id_y_right_down] + coordinates[id_y_left_up])
+        )/2.0
+      )/( 2.0*(alpha + gamma) ); 
+        
+      residual[id_x] = coordinates[id_x] - coordinateOld_x;
+      residual[id_y] = coordinates[id_y] - coordinateOld_y; 
+        
+      error += residual[id_x]*residual[id_x] + residual[id_y]*residual[id_y];
     }
   return error;
 }
