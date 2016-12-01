@@ -164,5 +164,45 @@ toyMesh2D::toyMesh2D
     trackingId += parBlocks[i].SizeInnerPoints();
   }
   pointsInBlocksIndex[sizeBlocks] = trackingId;
+} 
+  
+double toyMesh2D::smoothEllipticEquation
+(
+  const int& nX       ,
+  const int& nY       ,
+  double* coordinates ,
+  double* residual    ,
+  const int& numGap
+) const
+{
+  int numPointsX = (nX + 1);
+  int numTotalPoints = numPointsX*(nY + 1);
+  
+  double error = 0;
+  for (int i = numGap; i + numGap <= nY; i += numGap)
+    for (int j = numGap; j + numGap <= nX; j += numGap)
+    {
+    }
+  return error;
+}
+        
+double toyMesh2D::restriction
+(
+  const int& nX    ,
+  const int& nY    ,
+  double* residual ,
+  const int& numGap
+) const
+{
+}
+
+double toyMesh2D::prolongation
+(
+  const int& nX    ,
+  const int& nY    ,
+  double* residual ,
+  const int& numGap
+) const
+{
 }
 }
