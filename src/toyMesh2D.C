@@ -333,6 +333,29 @@ void toyMesh2D::writePoints() const
   for (int i = 0; i < sizePointsOfBlocks; i++)
     for (int j = 0; j < 2; j++)
       points[i][j] = pointsOfBlocks[i][j];
+  
+  // Points on lines
+  for (int blockId = 0; blockId < sizeBlocks; blockId++)
+    for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
+    {
+      int globalId = lineIdInBlock + 4*blockId;
+      int lineId   = lines[globalId][2] - 1;
+      if (lineId < 0 || (pointsOnLinesIndex[lineId] == pointsOnLinesIndex[lineId + 1]))
+        continue;
+    
+      switch (parBlocks[blockId].type[lineIdInBlock])
+      {
+        case 0:
+          break;
+        
+        case 1:
+          break;
+        
+        case 2:
+          break;
+      }
+    }
+    
 }
   
 void toyMesh2D::writeCells() const
