@@ -115,7 +115,8 @@ protected:
         (
           double* points            ,
           const double* givenPoints ,
-          const int& size
+          const int& size           ,
+          const int& dim = 2
         ) const;
 };
 }
