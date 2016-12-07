@@ -117,10 +117,11 @@ void baseToyMesh::givenPointsMap1D
 (
   double* points            ,
   const double* givenPoints ,
-  const int& size
+  const int& size           ,
+  const int& dim
 ) const
 {
-  for (int i = 0; i < 2*size; i++)
+  for (int i = 0; i < dim*size; i++)
     points[i] = givenPoints[i];
 }
 }
