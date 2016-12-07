@@ -73,7 +73,8 @@ public:
 
 protected:
     // Functions used to create points
-
+    // size: Number of points inside line
+        
         /*
           Points distribution on [0, 1] interval
           Type:  
