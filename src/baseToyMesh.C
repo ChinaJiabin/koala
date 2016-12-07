@@ -29,6 +29,37 @@ void baseToyMesh::equalRatioDistribution1D
   const int& type
 ) const
 {
+  if (ratio > 0 && abs(ratio - 1.0) > 1e-5)
+  {
+    // Equal ratio distribution
+    if (type == 0)
+    {
+      double q = pow(ratio, 1.0/size);
+      
+      map[0] = (q - 1.0)/(pow(q, size + 1) - 1);
+      map[1] = map[0]*(1 + q);
+      
+      for (int i = 2; i < size; i++)
+        map[i] = map[i - 1] + (map[i - 1] - map[i - 2])*q;
+    }
+    // Central equal ratio distribution
+    else
+    {
+      if (size == 1)
+        map[0] = 0.5;
+      else
+      {
+        int sizeHalf = size/2;
+        double q = pow(ratio, 1.0/sizeHalf);
+        
+        map[0] = 1.0/(
+      }
+    }
+  }
+  else
+    // Uniform distribution
+    for (int i = 0; i < size; i++)
+      map[i] = (i + 1)/(size + 1.0);
 }
 
 void baseToyMesh::lineMap1D
