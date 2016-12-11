@@ -322,6 +322,52 @@ double toyMesh2D::prolongation
   const int& numGap
 ) const
 {
+  int halfNumGap     = numGap/2.0;
+  int numPointsX     = (nX + 1);
+  int numTotalPoints = numPointsX*(nY + 1);
+  
+  for (int i = halfNumGap; i + halfNumGap <= nY; i += halfNumGap)
+    for (int j = halfNumGap; j + halfNumGap <= nX; j += halfNumGap)
+    {
+      int id_x = j + i*numPointsX;
+      if (i%numGap && j%numGap)
+      {
+        int id_x_right_up   = id_x + halfNumGap*(1 + numPointsX);
+        int id_x_left_up    = id_x_right_up - numGap;
+        int id_x_right_down = id_x + halfNumGap*(1 - numPointsX);
+        int id_x_left_down  = id_x_right_down - numGap;
+        
+        for (int dim = 0; dim < 2; dim++)
+          residual[id_x + dim*numTotalPoints] = (
+            residual[id_x_right_up   + dim*numTotalPoints] +
+            residual[id_x_left_up    + dim*numTotalPoints] +    
+            residual[id_x_right_down + dim*numTotalPoints] +
+            residual[id_x_left_down  + dim*numTotalPoints]
+          )/4.0;
+      }
+      else if (i%numGap)
+      {
+        int id_x_up   = id_x + halfNumGap*numPointsX;
+        int id_x_down = id_x - halfNumGap*numPointsX;
+        
+        for (int dim = 0; dim < 2; dim++)
+          residual[id_x + dim*numTotalPoints] = (
+            residual[id_x_up   + dim*numTotalPoints] +
+            residual[id_x_down + dim*numTotalPoints]
+          )/2.0;
+      }
+      else if (j%numGap)
+      {
+        int id_x_right = id_x + halfNumGap;
+        int id_x_left  = id_x_right - numGap;
+        
+        for (int dim = 0; dim < 2; dim++)
+          residual[id_x + dim*numTotalPoints] = (
+            residual[id_x_right + dim*numTotalPoints] +
+            residual[id_x_left  + dim*numTotalPoints]
+          )/2.0;
+      }
+    }
 }
   
 void toyMesh2D::writePoints() const
