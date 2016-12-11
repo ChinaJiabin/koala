@@ -111,6 +111,20 @@ void baseToyMesh::arcMap1D
   const int& type
 ) const
 {
+  if (!size)
+    return;
+  
+  double centreX = (startPoint[0] + endPoint[0])/2.0 + 0.5*(startPoint[1] - endPoint[1])/tan(angle/2.0);
+  double centreY = (startPoint[1] + endPoint[1])/2.0 - 0.5*(startPoint[0] - endPoint[0])/tan(angle/2.0);                                                                                        
+                                                            
+  double map[size];
+  equalRatioDistribution1D(map, size, ratio, type);
+  for (int i = 0; i < size; i++)
+  {
+    double angle_i = angle*map[i];
+    points[2*i]     = centerX + (startPoint[0] - centreX)*cos(angle_i) - (startPoint[1] - centreY)*sin(angle_i);
+    points[1 + 2*i] = centerY + (startPoint[0] - centreX)*sin(angle_i) + (startPoint[1] - centreY)*cos(angle_i);
+  }
 }
 
 void baseToyMesh::givenPointsMap1D
