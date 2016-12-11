@@ -392,6 +392,16 @@ void toyMesh2D::writePoints() const
       switch (parBlocks[blockId].type[lineIdInBlock])
       {
         case 0:
+          lineMap1D
+          (
+            &points[lines[i][0]][0]                ,
+            &points[lines[i][1]][0]                ,
+            &points[pointsOnLinesIndex[lineId]][0] ,
+            numPoints                              ,
+            2                                      ,
+            parLines[parLinesIndex[i]]             ,
+            parLines[parLinesIndex[i] + 1]
+          );
           break;
         
         case 1:
