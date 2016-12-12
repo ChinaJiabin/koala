@@ -371,7 +371,17 @@ double toyMesh2D::prolongation
 }
   
 void toyMesh2D::writePoints() const
-{
+{ 
+  // Get innerLinesPointsId
+  int numInnerLines       = 0;
+  int numInnerLinesPoints = 0;
+  for (int i = 0; i < 4*sizeBlocks; i++)
+  {
+    int lineId = lines[i][2] - 1;
+    if (lineId < 0 || lines[i][3] == -1)
+      continue;
+  }
+  
   // New points array
   double points[sizePoints][2];
   
