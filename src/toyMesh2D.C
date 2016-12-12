@@ -450,6 +450,14 @@ void toyMesh2D::writePoints() const
       if (sqrt(error) < tolerance)
         break;
     }
+    
+    // Write
+    std::ofstream file;
+    Run.openFile(file, "points", NULL, filesPath);
+    
+    file << sizePoints << "\n";
+    for (int pointId = 0; pointId < sizePoints; pointId++)
+      file << points[pointId][0] << " " << points[pointId][1] << "\n";
   }
 }
   
