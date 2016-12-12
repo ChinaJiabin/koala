@@ -427,7 +427,30 @@ void toyMesh2D::writePoints() const
           break;
       }
     } 
-    
+  
+  //2. Create points in blocks
+  double tolerance = 1e-5;
+  double error     = 0;
+  int numIter      = -1;
+  while (1)
+  {
+    error      = 0;
+    trackingId = 0;
+    for (int blockId = 0; blockId < sizeBlocks; blockId++)
+    {
+      if (++numIter > 1e4)
+      {
+        std::cout<< "Reach the maximum number of iteration for map2D!" << std::endl;
+        break;
+      }
+      
+      if (numIter == 0)
+        continue;
+      
+      if (sqrt(error) < tolerance)
+        break;
+    }
+  }
 }
   
 void toyMesh2D::writeCells() const
