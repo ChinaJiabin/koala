@@ -380,6 +380,28 @@ void toyMesh2D::writePoints() const
     int lineId = lines[i][2] - 1;
     if (lineId < 0 || lines[i][3] == -1)
       continue;
+    
+    numInnerLines++;
+    numInnerLinesPoints += pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
+  }
+  int innerLinesPointsId[numInnerLinesPoints + 2*numInnerLines][3];
+  
+  int trackingId = 0;
+  for (int i = 0; i < 4*sizeBlocks; i++)
+  {
+    // 0.
+    int lineId = lines[i][2] - 1;
+    if (lineId < 0 || lines[i][3] == -1)
+      continue;
+    
+    int (*linePointsId)[3] = &innerLinesPointsId[trackingId];
+    int numPoints = pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
+    trackingId += numPoints + 2;
+    
+    linePointsId[0][0]             = lines[i][0];
+    linePointsId[numPoints + 1][0] = lines[i][1];
+    for (int j = 1; j <= numPoints; j++)
+      linePointsId[j][0] = pointsOnLinesIndex[lineId] + (j - 1);
   }
   
   // New points array
