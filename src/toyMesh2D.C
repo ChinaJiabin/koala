@@ -387,21 +387,76 @@ void toyMesh2D::writePoints() const
   int innerLinesPointsId[numInnerLinesPoints + 2*numInnerLines][3];
   
   int trackingId = 0;
-  for (int i = 0; i < 4*sizeBlocks; i++)
-  {
-    // 0.
-    int lineId = lines[i][2] - 1;
-    if (lineId < 0 || lines[i][3] == -1)
-      continue;
+  for (int blockId = 0; blockId < sizeBlocks; blockId++)
+    for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
+    {
+      int globalId = lineIdInBlock + 4*blockId;
+
+      // 0.
+      int lineId = lines[globalId][2] - 1;
+      if (lineId < 0 || lines[globalId][3] == -1)
+        continue;
     
-    int (*linePointsId)[3] = &innerLinesPointsId[trackingId];
-    int numPoints = pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
-    trackingId += numPoints + 2;
+      int (*linePointsId)[3] = &innerLinesPointsId[trackingId];
+      int numPoints = pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
+      trackingId += numPoints + 2;
     
-    linePointsId[0][0]             = lines[i][0];
-    linePointsId[numPoints + 1][0] = lines[i][1];
-    for (int j = 1; j <= numPoints; j++)
-      linePointsId[j][0] = pointsOnLinesIndex[lineId] + (j - 1);
+      linePointsId[0][0]             = lines[globalId][0];
+      linePointsId[numPoints + 1][0] = lines[globalId][1];
+      for (int offset = 1; offset <= numPoints; offset++)
+        linePointsId[offset][0] = pointsOnLinesIndex[lineId] + (offset - 1);
+    
+      // 1. Case owner block
+      {
+        int idBefore      = globalId + (lineIdInBlock == 0 ? 3 : -1);
+        int lineIdBefore  = abs(lines[idBefore][2]) - 1;
+      
+        if (pointsOnLinesIndex[lineIdBefore] != pointsOnLinesIndex[lineIdBefore + 1])
+        {
+          if (lines[idBefore][2] > 0)
+            linePointsId[0][1] = pointsOnLinesIndex[lineIdBefore + 1] - 1;
+          else
+            linePointsId[0][1] = pointsOnLinesIndex[lineIdBefore];
+        
+          int idAfter     = globalId + (lineIdInBlock == 3 ? -3 : 1);
+          int lineIdAfter = abs(lines[idAfter][2]) - 1;
+          
+          if (lines[idAfter][2] > 0)
+            linePointsId[numPoints + 1][1] = pointsOnLinesIndex[lineIdAfter];
+          else
+            linePointsId[numPoints + 1][1] = pointsOnLinesIndex[lineIdAfter + 1] - 1;
+          
+          switch (lineIdInBlock)
+          {
+            case 0:
+              for (int offset = 1; offset <= numPoints; offset++)
+                linePointsId[offset][1] = pointsInBlocksIndex[blockId] + (offset - 1);
+              break;
+              
+            case 1:
+              for (int offset = 1; offset <= numPoints; offset++)
+                linePointsId[offset][1] = pointsInBlocksIndex[blockId] + (offset*(parBlocks[blockId].n[0] - 1) - 1);
+              break;
+              
+            case 2:
+              for (int offset = 1; offset <= numPoints; offset++)
+                linePointsId[offset][1] = pointsInBlocksIndex[blockId + 1] - offset;
+              break;
+              
+            case 3:
+              for (int offset = 1; offset <= numPoints; offset++)
+                linePointsId[offset][1] = pointsInBlocksIndex[blockId + 1] - offset*(parBlocks[blockId].n[0] - 1);
+              break;
+          }
+      }
+      else
+      {
+      }
+    }
+    
+    // 2. Case neighbour block
+    {
+    }
   }
   
   // New points array
