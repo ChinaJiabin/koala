@@ -405,12 +405,28 @@ void toyMesh2D::writePoints() const
           break;
         
         case 1:
+          arcMap1D
+          (
+            &points[lines[i][0]][0]                ,
+            &points[lines[i][1]][0]                ,
+            &points[pointsOnLinesIndex[lineId]][0] ,
+            numPoints                              ,
+            parLines[parLinesIndex[i]]             ,
+            parLines[parLinesIndex[i] + 1]         ,
+            parLines[parLinesIndex[i] + 2]
+          );
           break;
         
         case 2:
+          givenPointsMap1D
+          (
+            &points[pointsOnLinesIndex[lineId]][0] ,
+            &parLines[parLinesIndex[i]]            ,
+            parLinesIndex[i + 1] - parLinesIndex[i]
+          );
           break;
       }
-    }
+    } 
     
 }
   
