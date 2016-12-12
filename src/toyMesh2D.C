@@ -448,16 +448,18 @@ void toyMesh2D::writePoints() const
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId + 1] - offset*(parBlocks[blockId].n[0] - 1);
               break;
           }
+        }
+        else
+        {
+          int idOpposite     = globalId + (lineIdInBlock < 2 ? 2 : -2);
+          int lineIdOpposite = abs(lines[idOpposite][2]) - 1;
+        }
       }
-      else
+    
+      // 2. Case neighbour block
       {
       }
     }
-    
-    // 2. Case neighbour block
-    {
-    }
-  }
   
   // New points array
   double points[sizePoints][2];
