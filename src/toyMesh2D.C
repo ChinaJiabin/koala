@@ -8,6 +8,13 @@ const int LINE_BOTTOM = 0;
 const int LINE_RIGHT  = 1;
 const int LINE_TOP    = 2;
 const int LINE_LEFT   = 3;
+
+void intSwap(int& a, int& b)
+{
+  a ^= b;
+  b ^= a;
+  a ^= b;
+}
   
 parBlock2D::parBlock2D()
 {
@@ -505,7 +512,7 @@ void toyMesh2D::writePoints() const
               
             case LINE_LEFT:
               for (int offset = 1; offset <= numPoints; offset++)
-                linePointsId[offset][2] = pointsInBlocksIndex[blockId + 1] + ((offset - 1)*(parBlocks[blockId].n[0] - 1) + 1);
+                linePointsId[offset][2] = pointsInBlocksIndex[blockId + 1] - ((offset - 1)*(parBlocks[blockId].n[0] - 1) + 1);
               break;
               
             case LINE_TOP:
