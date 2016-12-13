@@ -688,30 +688,36 @@ void toyMesh2D::writePoints() const
     trackingId = 0;
     for (int blockId = 0; blockId < sizeBlocks; blockId++)
     {
-      if (++numIter > 1e4)
+      // Smooth points on block lines that is not belong to boundary
+      for (int j = 0; j < 4; j++)
       {
-        std::cout<< "Reach the maximum number of iteration for map2D!" << std::endl;
-        break;
       }
-      
-      if (numIter == 0)
-        continue;
-      
-      if (sqrt(error) < tolerance)
-        break;
     }
-    
-    std::cout<< "Number of iteration = " << numIter
-             << " Error = " << error << std::endl;
-    
-    // Write
-    std::ofstream file;
-    Run.openFile(file, "points", NULL, filesPath);
-    
-    file << sizePoints << "\n";
-    for (int pointId = 0; pointId < sizePoints; pointId++)
-      file << points[pointId][0] << " " << points[pointId][1] << "\n";
+     
+    // 
+    if (++numIter > 1e4)
+    {
+      std::cout<< "Reach the maximum number of iteration for map2D!" << std::endl;
+      break;
+    }
+      
+    if (numIter == 0)
+      continue;
+      
+    if (sqrt(error) < tolerance)
+      break;
   }
+    
+  std::cout<< "Number of iteration = " << numIter
+           << " Error = " << error << std::endl;
+    
+  // Write
+  std::ofstream file;
+  Run.openFile(file, "points", NULL, filesPath);
+    
+  file << sizePoints << "\n";
+  for (int pointId = 0; pointId < sizePoints; pointId++)
+    file << points[pointId][0] << " " << points[pointId][1] << "\n";
 }
   
 void toyMesh2D::writeCells() const
