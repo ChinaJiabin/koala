@@ -563,4 +563,5 @@ void toyMesh2D::writeBoundaryPointsId() const
 }
   
 void toyMesh2D::writeBoundaryFacesId() const
+{
 }
