@@ -701,6 +701,9 @@ void toyMesh2D::writePoints() const
         break;
     }
     
+    std::cout<< "Number of iteration = " << numIter
+             << " Error = " << error << std::endl;
+    
     // Write
     std::ofstream file;
     Run.openFile(file, "points", NULL, filesPath);
