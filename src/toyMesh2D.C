@@ -567,6 +567,59 @@ void toyMesh2D::writePoints() const
     int lineId = lines[i][2] - 1;
     if (lineId < 0 || lines[i][3] == -1)
       continue;
+    
+    int (*linePointsId)[3] = &innerLinesPointsId[trackingId];
+    int numPoints = pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
+    tracking += numPoints + 2;
+    
+    if (innerBlockPointsId[lines[i][0]] != -1)
+    {
+      if (commonPointsId[innerBlockPointsId[lines[i][0]]].empty())
+        commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(lines[i][0]);
+       
+      commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(linePointsId[1][1]);
+      commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(linePointsId[1][0]);
+      commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(linePointsId[1][2]);
+    }
+    
+    if (innerBlockPointsId[lines[i][1]] != -1)
+    {
+      if (commonPointsId[innerBlockPointsId[lines[i][1]]].empty())
+        commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(lines[i][1]);
+       
+      commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(linePointsId[numPoints][1]);
+      commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(linePointsId[numPoints][0]);
+      commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(linePointsId[numPoints][2]);
+    }
+  }
+  
+  for (int i = 0; i < sizeInnerBlockPoints; i++)
+  {
+    // Reorder
+    int startId = 3;
+    while (startId < commonPointsId[i].size())
+    { 
+      for (int j = startId + 1; j < commonPointsId[i].size(); j++)
+        if (commonPointsId[i][startId] == commonPointsId[i][j])
+        {
+          if (j == startId + 3)
+            intSwap(commonPointsId[i][startId + 1], commonPointsId[i][startId + 3]);
+          
+          else if (j > startId + 3 && j%3 == 1)
+            for (int k = 1; k <= 3; k++)
+              intSwap(commonPointsId[i][startId + k], commonPointsId[i][j + k - 1]);
+          
+          else if (j%3 == 0)
+            for (int k = 1; k <= 3; k++)
+              intSwap(commonPointsId[i][startId + k], commonPointsId[i][j + 1 - k]);
+          
+          break;
+        }
+      startId += 3;
+    }
+    
+    if (commonPointsId[i][1] != commonPointsId[i][commonPointsId[i].size() - 1])
+      intSwap(commonPoints[i][commonPointsId[i].size() - 1], commonPoints[i][commonPointsId[i].size() - 3]);
   }
   
   // New points array
