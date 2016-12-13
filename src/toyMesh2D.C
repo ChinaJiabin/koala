@@ -688,13 +688,52 @@ void toyMesh2D::writePoints() const
     trackingId = 0;
     for (int blockId = 0; blockId < sizeBlocks; blockId++)
     {
+      const int& nX = parBlocks[blockId].n[0];
+      const int& nY = parBlocks[blockId].n[1];
+      
+      listLines2D blockLines   = &lines[4*blockId];
+      listPoints2D blockPoints = &points[pointsInBlocksIndex[blockId]];
+      double coordinates[2*(nY + 1)][(nX + 1)];
+      
+      // Set boundary points
+      // Bottom
+      const double* bottom = &points[pointsOnLinesIndex[abs(blockLines[0][2]) - 1]][0];
+      
+      // Right
+      const double* right = &points[pointsOnLinesIndex[abs(blockLines[1][2]) - 1]][0];
+      
+      // Top
+      const double* top = &points[pointsOnLinesIndex[abs(blockLines[2][2]) - 1]][0];
+      
+      // Left
+      const double* left = &points[pointsOnLinesIndex[abs(blockLines[3][2]) - 1]][0];
+      
+      // Four corner points
+      for (int dim = 0; dim < 2; dim++)
+      {
+      }
+      
+      // Set initial value by calculating the intersection point of two lines
+      if (numIter == -1)
+      {
+        continue;
+      }
+      
       // Smooth points on block lines that is not belong to boundary
-      for (int j = 0; j < 4; j++)
+      for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
       {
       }
     }
      
-    // 
+    // Smooth end points of lines and the points is not belong to boundary
+    for (int i = 0; i < sizeInnerBlockPoints; i++)
+      if (commonPointsId[i].size() == 13)
+      {
+      }
+      else
+      {
+      }
+         
     if (++numIter > 1e4)
     {
       std::cout<< "Reach the maximum number of iteration for map2D!" << std::endl;
