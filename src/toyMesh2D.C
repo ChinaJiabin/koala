@@ -4,7 +4,11 @@
 #include <upstream>
 namespace Koala
 {
-
+const int LINE_BOTTOM = 0;
+const int LINE_RIGHT  = 1;
+const int LINE_TOP    = 2;
+const int LINE_LEFT   = 3;
+  
 parBlock2D::parBlock2D()
 {
   type = new int[4]; // Suggest: Type use char instead of int
@@ -403,6 +407,7 @@ void toyMesh2D::writePoints() const
     
       linePointsId[0][0]             = lines[globalId][0];
       linePointsId[numPoints + 1][0] = lines[globalId][1];
+      
       for (int offset = 1; offset <= numPoints; offset++)
         linePointsId[offset][0] = pointsOnLinesIndex[lineId] + (offset - 1);
     
@@ -428,22 +433,22 @@ void toyMesh2D::writePoints() const
           
           switch (lineIdInBlock)
           {
-            case 0:
+            case LINE_BOTTOM:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId] + (offset - 1);
               break;
               
-            case 1:
+            case LINE_LEFT:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId] + (offset*(parBlocks[blockId].n[0] - 1) - 1);
               break;
               
-            case 2:
+            case LINE_TOP:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId + 1] - offset;
               break;
               
-            case 3:
+            case LINE_RIGHT:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId + 1] - offset*(parBlocks[blockId].n[0] - 1);
               break;
@@ -453,6 +458,16 @@ void toyMesh2D::writePoints() const
         {
           int idOpposite     = globalId + (lineIdInBlock < 2 ? 2 : -2);
           int lineIdOpposite = abs(lines[idOpposite][2]) - 1;
+          
+          linePointsId[0][1]             = lines[idOpposite][1];
+          linePointsId[numPoints + 1][1] = lines[idOpposite][0];
+          
+          if (lines[idOpposite][2] > 0)
+            for (int offset = 1; offset <= numPoints; offset++)
+              linePointsId[offset][1] = pointsInBlocksIndex[lineIdOpposite + 1] - offset;
+          else
+            for (int offset = 1; offset <= numPoints; offset++)
+              linePointsId[offset][1] = pointsInBlocksIndex[lineIdOpposite] + (offset - 1);
         }
       }
     
