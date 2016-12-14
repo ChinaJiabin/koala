@@ -698,19 +698,55 @@ void toyMesh2D::writePoints() const
       // Set boundary points
       // Bottom
       const double* bottom = &points[pointsOnLinesIndex[abs(blockLines[0][2]) - 1]][0];
-      
+      if (blockLines[0][2] >= 0)
+        for (int offset = 1; offset < nX; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[dim*(nY + 1)][offset] = bottom[dim + 2*(offset - 1)];
+      else
+        for (int offset = 1; offset < nX; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[dim*(nY + 1)][offset] = bottom[dim + 2*(nX - 1 - offset)];
+        
       // Right
       const double* right = &points[pointsOnLinesIndex[abs(blockLines[1][2]) - 1]][0];
+      if (blockLines[1][2] >= 0)
+        for (int offset = 1; offset < nY; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[offset + dim*(nY + 1)][nX] = right[dim + 2*(offset - 1)];
+      else
+        for (int offset = 1; offset < nY; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[offset + dim*(nY + 1)][nX] = right[dim + 2*(nY - 1 - offset)];
       
       // Top
       const double* top = &points[pointsOnLinesIndex[abs(blockLines[2][2]) - 1]][0];
+      if (blockLines[2][2] >= 0)
+        for (int offset = 1; offset < nX; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[(dim + 1)*(nY + 1) - 1][offset] = top[dim + 2*(nX - 1 - offset)];
+      else
+        for (int offset = 1; offset < nX; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[(dim + 1)*(nY + 1) - 1][offset] = top[dim + 2*(offset - 1)];
       
       // Left
       const double* left = &points[pointsOnLinesIndex[abs(blockLines[3][2]) - 1]][0];
+      if (blockLines[3][2] >= 0)
+        for (int offset = 1; offset < nY; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[offset + dim*(nY + 1)][0] = left[dim + 2*(nY - 1 - offset)];
+      else
+        for (int offset = 1; offset < nY; offset++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[offset + dim*(nY + 1)][0] = left[dim + 2*(offset - 1)];
       
       // Four corner points
       for (int dim = 0; dim < 2; dim++)
       {
+        coordinates[dim*(nY + 1)][0]       = points[blockLines[0][0]][i];
+        coordinates[dim*(nY + 1)][nX]      = points[blockLines[0][1]][i];
+        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[2][0]][i];
+        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[2][1]][i];
       }
       
       // Set initial value by calculating the intersection point of two lines
