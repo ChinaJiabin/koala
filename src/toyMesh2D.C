@@ -815,6 +815,21 @@ void toyMesh2D::writePoints() const
       // Smooth points on block lines that is not belong to boundary
       for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
       {
+        int lineId = blockLines[lineIdInBlock][2] - 1;
+        if (lineId < 0 || blockLines[lineIdInBlock][3] == -1)
+          continue;
+        
+        int (*linePointsId)[3] = &innerLinesPointsId[trackingId];
+        int numPoints = pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
+        trackingId   += numPoints + 2;
+        
+        for (int offset = 1; offset <= numPoints; offset++)
+        {
+          double alpha = (
+            
+          )/4.0;
+           
+        }
       }
     }
      
