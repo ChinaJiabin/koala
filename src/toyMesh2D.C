@@ -4,11 +4,16 @@
 #include <iostream>
 namespace Koala
 {
+// Constant
 const int LINE_BOTTOM = 0;
 const int LINE_RIGHT  = 1;
 const int LINE_TOP    = 2;
 const int LINE_LEFT   = 3;
 
+const int LINE_POINT_FIRST_ID = 0
+const int LINE_POINT_END_ID   = 1
+
+// Swap two int number
 void intSwap(int& a, int& b)
 {
   a ^= b;
@@ -121,14 +126,15 @@ toyMesh2D::toyMesh2D
     listLines2D blockLines    = &lines[4*i];
     for ( j = 0; j < 4; j++)
     {
-      blockLines[j][0] = blockPointsId[j];         // First points Id of line
-      blockLines[j][1] = blockPointsId[(j + 1)%4]; // Second point Id of line
-      blockLines[j][2] = ++sizeLines;              // Id
-      blockLines[j][3] = -1;                       // Line Id(0,1,2,3) in neighbour block
-      blockLines[j][4] = -1;                       // Neighbour block Id
+      blockLines[j][LINE_POINT_FIRST_ID] = blockPointsId[j];         // First points Id of line
+      blockLines[j][LINE_POINT_END_ID]   = blockPointsId[(j + 1)%4]; // Second point Id of line
+      blockLines[j][2]                   = ++sizeLines;              // Id
+      blockLines[j][3]                   = -1;                       // Line Id(0,1,2,3) in neighbour block
+      blockLines[j][4]                   = -1;                       // Neighbour block Id
       
       for (int k = 0; k < 4*i; k++)
-        if (lines[k][0] == blockLines[j][1] && lines[k][1] == blockLines[j][0])
+        if (lines[k][LINE_POINT_FIRST_ID] == blockLines[j][LINE_POINT_END_ID] && 
+            lines[k][LINE_POINT_END_ID]   == blockLines[j][LINE_POINT_FIRST_ID])
         {
           lines[k][3] = j;
           lines[k][4] = i;
@@ -735,10 +741,10 @@ void toyMesh2D::writePoints() const
       // Four corner points
       for (int dim = 0; dim < 2; dim++)
       {
-        coordinates[dim*(nY + 1)][0]       = points[blockLines[LINE_BOTTOM][0]][i];
-        coordinates[dim*(nY + 1)][nX]      = points[blockLines[LINE_BOTTOM][1]][i];
-        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[LINE_TOP][0]][i];
-        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[LINE_TOP][1]][i];
+        coordinates[dim*(nY + 1)][0]       = points[blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID]][i];
+        coordinates[dim*(nY + 1)][nX]      = points[blockLines[LINE_BOTTOM][LINE_POINT_END_ID]][i];
+        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[LINE_TOP][LINE_POINT_FIRST_ID]][i];
+        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[LINE_TOP][LINE_POINT_END_ID]][i];
       }
       
       // Set initial value by calculating the intersection point of two lines
