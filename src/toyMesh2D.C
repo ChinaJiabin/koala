@@ -752,16 +752,55 @@ void toyMesh2D::writePoints() const
       // Set initial value by calculating the intersection point of two lines
       if (numIter == -1)
       {
-        for (int )
+        for (int offsetY = 1; offsetY < nY; offsetY++)
         {
-          for (int )
+          const double& x1 = coordinates[offsetY][0];
+          const double& y1 = coordinates[offsetY + (nY + 1)][0];
+          
+          const double& X2 = coordinates[offsetY][nX];
+          const double& y2 = coordinates[offsetY + (nY + 1)][nX];
+          
+          for (int offsetX = 1; offsetX < nX; offsetX++)
           {
+            const double& x3 = coordinates[0][offsetY];
+            const double& y3 = coordinates[nY + 1][offsetY];
+            
+            const double& x4 = coordinates[nY][offsetY];
+            const double& y4 = coordinates[nY + (nY + 1)][offsetY];
+            
+            double denominator = (x1 -x2)*(y3 - y4) + (x3 -x4)*(y2 - y1);
+            
+            blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][0] = (
+              x1*x3*(y2 - y4) + x2*x3*(y4 - y1) +
+              x1*x4*(y3 - y2) + x2*x4*(y1 - y3)
+            )/denominator;
+            
+            blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][1] = (
+              y1*y3*(x4 - x2) + y2*y3*(x1 - x4) +
+              y1*y4*(x2 - x3) + y2*y4*(x3 - x1)
+            )/denominator;
           }
         }
         continue;
       }
       
       // Initialize coordinates
+      for (int offsetY = 1; offsetY < nY; offsetY++)
+        for (int offsetX = 1; offsetX < nX; offsetX++)
+          for (int dim = 0; dim < 2; dim++)
+            coordinates[offsetY + dim*(nY + 1)][offsetX] = 
+              blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][dim];
+      
+      // Key part
+      // :0. Initialize residual
+      
+      // :1. Smooth on original grid
+      
+      // :2. Restriction operation
+      
+      // :3. Prolongation operation
+      
+      // :4. Update blockPoints
       
       // Smooth points on block lines that is not belong to boundary
       for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
