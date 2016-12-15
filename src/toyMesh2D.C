@@ -793,15 +793,25 @@ void toyMesh2D::writePoints() const
       
       // Key part
       // :0. Initialize residual
+      double residual[2*(nY + 1)][nX + 1];
+      memset(residual, 0, 2*(nY + 1)*(nX + 1)*sizeof(double));
       
       // :1. Smooth on original grid
+      error += smoothEllipticEquation(nX, nY, &coordinates[0][0], &residual[0][0]);
       
       // :2. Restriction operation
+      restriction(nX, nY, &residual[0][0]);
       
       // :3. Prolongation operation
+      prolongation(nX, nY, &residual[0][0]);
       
       // :4. Update blockPoints
-      
+      for (int offsetY = 1; offsetY < nY; offsetY++)
+        for (int offsetX = 1; offsetX < nX; offsetX++)
+          for (int dim = 0; dim < 2; dim++)
+            blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][dim] =
+              coordinates[offsetY + dim*(nY + 1)][offsetX] + residual[offsetY + dim*(nY + 1)][offsetX];
+            
       // Smooth points on block lines that is not belong to boundary
       for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
       {
