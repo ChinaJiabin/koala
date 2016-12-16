@@ -182,8 +182,41 @@ toyMesh2D::toyMesh2D
   }
   pointsInBlocksIndex[sizeBlocks] = trackingId;
 } 
+double toyMesh2D::smoothPoint
+(
+  double& point_x , 
+  double& point_y ,
+  const double& point_x_right     , const double& point_y_right     ,
+  const double& point_x_up        , const double& point_y_up        ,
+  const double& point_x_left      , const double& point_y_left      ,
+  const double& point_x_down      , const double& point_y_down      ,
+  const double& point_x_right_up  , const double& point_y_right_up  ,
+  const double& point_x_up_left   , const double& point_y_up_left   ,
+  const double& point_x_left_down , const double& point_y_left_down ,
+  const double& point_x_down_right, const double& point_y_down_right
+) const
+{
+  double delta_x_xi  = point_x_right - point_x_left;
+  double delta_x_eta = point_x_up    - point_x_down;
+      
+  double delta_y_xi  = point_y_right - point_y_left;
+  double delta_y_eta = point_y_up    - point_y_down;
+      
+  double alpha = (delta_x_eta*delta_x_eta + delta_y_eta*delta_y_eta)/8.0;
+  double beta  = (delta_x_xi*delta_x_eta  + delta_y_xi*delta_y_eta)/16.0;
+  double gamma = (delta_x_xi*delta_x_xi   + delta_y_xi*delta_y_xi)/8.0;
   
-double toyMesh2D::smoothEllipticEquation
+  point_x = (
+    alpha*(point_x_left + point_x_right) +
+    gamma*(point_x_down + point_x_up)    -
+    beta*(
+      (point_x_right_up   + point_x_left_down) -
+      (point_x_down_right + point_x_up_left)
+    )
+  )/(alpha + gamma);
+}
+  
+double toyMesh2D::smoothBlockPoints
 (
   const int& nX       ,
   const int& nY       ,
@@ -795,7 +828,7 @@ void toyMesh2D::writePoints() const
       memset(residual, 0, 2*(nY + 1)*(nX + 1)*sizeof(double));
       
       // :1. Smooth on original grid
-      error += smoothEllipticEquation(nX, nY, &coordinates[0][0], &residual[0][0]);
+      error += smoothBlockPoints(nX, nY, &coordinates[0][0], &residual[0][0]);
       
       // :2. Restriction operation
       restriction(nX, nY, &residual[0][0]);
