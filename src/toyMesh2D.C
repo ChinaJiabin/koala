@@ -823,10 +823,22 @@ void toyMesh2D::writePoints() const
         
         for (int offset = 1; offset <= numPoints; offset++)
         {
-          double alpha = (
-            
-          )/4.0;
+          double delta_x_xi  = points[linePointsId[offset][2]][0]     - points[linePointsId[offset][1]][0];
+          double delta_x_eta = points[linePointsId[offset + 1][0]][0] - points[linePointsId[offset - 1][0]][0];
+      
+          double delta_y_xi  = points[linePointsId[offset][2]][1]     - points[linePointsId[offset][1]][1];
+          double delta_y_eta = points[linePointsId[offset + 1][0]][1] - points[linePointsId[offset - 1][0]][1];
+      
+          double alpha = (delta_x_eta*delta_x_eta + delta_y_eta*delta_y_eta)/8.0;
+          double beta  = (delta_x_xi*delta_x_eta  + delta_y_xi*delta_y_eta)/16.0;
+          double gamma = (delta_x_xi*delta_x_xi   + delta_y_xi*delta_y_xi)/8.0;
            
+          for (int dim = 0; dim < 2; dim++)
+          {
+            double pointOld = points[linePointsId[offset][0]][dim];
+            points[linePointsId[offset][0]][dim] = (
+            )/(alpha + gamma);
+          }
         }
       }
     }
