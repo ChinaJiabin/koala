@@ -887,6 +887,10 @@ void toyMesh2D::writePoints() const
           points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1]        
         );
         
+        double residualX = pointOldX - points[commonPointsId[i][0]][0];
+        double residualY = pointOldY - points[commonPointsId[i][0]][1];
+          
+        error += residualX*residualX + residualY*residualY;
       }
       else
       {
@@ -919,6 +923,15 @@ void toyMesh2D::writePoints() const
   
 void toyMesh2D::writeCells() const
 {
+  std::ofstream file;
+  Run.openFile(file, "cells", NULL, filesPath);
+  
+  file << sizeCells << " 4" << "\n";
+  
+  for (int blockId = 0; blockId < sizeBlocks; blockId++)
+  {
+    int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
+  }
 }
   
 void toyMesh2D::writeFaces() const
