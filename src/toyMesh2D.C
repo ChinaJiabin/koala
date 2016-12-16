@@ -844,6 +844,25 @@ void toyMesh2D::writePoints() const
         for (int offset = 1; offset <= numPoints; offset++)
         {
           double pointOldX = points[linePointsId[offset][0]][0];
+          double pointOldY = points[linePointsId[offset][0]][1];
+          
+          smoothPoint
+          (
+            points[linePointsId[offset][0]][0]    , points[linePointsId[offset][0]][1]     ,
+            points[linePointsId[offset][2]][0]    , points[linePointsId[offset][2]][1]     ,
+            points[linePointsId[offset + 1][0]][0], points[linePointsId[offset + 1][0]][1] ,
+            points[linePointsId[offset][1]][0]    , points[linePointsId[offset][1]][1]     ,
+            points[linePointsId[offset - 1][0]][0], points[linePointsId[offset - 1][0]][1] ,
+            points[linePointsId[offset + 1][2]][0], points[linePointsId[offset + 1][2]][1] ,
+            points[linePointsId[offset + 1][1]][0], points[linePointsId[offset + 1][1]][1] ,
+            points[linePointsId[offset - 1][1]][0], points[linePointsId[offset - 1][1]][1] ,
+            points[linePointsId[offset - 1][2]][0], points[linePointsId[offset - 1][2]][1] 
+          );
+          
+          double residualX = pointOldX - points[linePointsId[offset][0]][0];
+          double residualY = pointOldY - points[linePointsId[offset][0]][1];
+          
+          error += residualX*residualX + residualY*residualY;
         }
       }
     }
@@ -852,6 +871,22 @@ void toyMesh2D::writePoints() const
     for (int i = 0; i < sizeInnerBlockPoints; i++)
       if (commonPointsId[i].size() == 13)
       {
+        double pointOldX = points[commonPointsId[i][0]][0];
+        double pointOldY = points[commonPointsId[i][0]][1];
+        
+        smoothPoint
+        (
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,  
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,     
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,         
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,         
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,          
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,          
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1]        
+        );
+        
       }
       else
       {
