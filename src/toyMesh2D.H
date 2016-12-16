@@ -38,7 +38,22 @@ private:
         listLines2D lines;
 
         // Smooth method: Gauss-Seidel method
-        double smoothEllipticEquation
+        double smoothPoint
+        (
+          double& point_x , 
+          double& point_y ,
+          const double& point_x_right     , const double& point_y_right     ,
+          const double& point_x_up        , const double& point_y_up        ,
+          const double& point_x_left      , const double& point_y_left      ,
+          const double& point_x_down      , const double& point_y_down      ,
+          const double& point_x_right_up  , const double& point_y_right_up  ,
+          const double& point_x_up_left   , const double& point_y_up_left   ,
+          const double& point_x_left_down , const double& point_y_left_down ,
+          const double& point_x_down_right, const double& point_y_down_right
+        ) const;
+        
+        // Smooth all points in the block
+        double smoothBlockPoints
         (
           const int& nX       ,
           const int& nY       ,
