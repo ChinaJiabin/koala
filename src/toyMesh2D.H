@@ -37,8 +37,11 @@ private:
         listPoints2D pointsOfBlocks;
         listLines2D lines;
 
-        // Smooth method: Gauss-Seidel method
-        double smoothPoint
+        /* 
+          Gauss-Seidel smooth method
+          Format from elliptic equation
+        */
+        void smoothPoint
         (
           double& point_x , 
           double& point_y ,
