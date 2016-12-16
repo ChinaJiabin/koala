@@ -182,7 +182,8 @@ toyMesh2D::toyMesh2D
   }
   pointsInBlocksIndex[sizeBlocks] = trackingId;
 } 
-double toyMesh2D::smoothPoint
+  
+void toyMesh2D::smoothPoint
 (
   double& point_x , 
   double& point_y ,
@@ -206,6 +207,8 @@ double toyMesh2D::smoothPoint
   double beta  = (delta_x_xi*delta_x_eta  + delta_y_xi*delta_y_eta)/16.0;
   double gamma = (delta_x_xi*delta_x_xi   + delta_y_xi*delta_y_xi)/8.0;
   
+  double sumAlphaGamma = alpha + gamma;
+  
   point_x = (
     alpha*(point_x_left + point_x_right) +
     gamma*(point_x_down + point_x_up)    -
@@ -213,7 +216,16 @@ double toyMesh2D::smoothPoint
       (point_x_right_up   + point_x_left_down) -
       (point_x_down_right + point_x_up_left)
     )
-  )/(alpha + gamma);
+  )/sumAlphaGamma;
+  
+  point_y = (
+    alpha*(point_y_left + point_y_right) +
+    gamma*(point_y_down + point_y_up)    -
+    beta*(
+      (point_y_right_up   + point_y_left_down) -
+      (point_y_down_right + point_y_up_left)
+    )
+  )/sumAlphaGamma;
 }
   
 double toyMesh2D::smoothBlockPoints
@@ -242,54 +254,29 @@ double toyMesh2D::smoothBlockPoints
       int id_x_up    = id_x + numGapPointsX;
       int id_x_down  = id_x - numGapPointsX;
       
-      int id_y_right = id_x_right + numTotalPoints;
-      int id_y_left  = id_x_left  + numTotalPoints;
-      int id_y_up    = id_x_up    + numTotalPoints;
-      int id_y_down  = id_x_down  + numTotalPoints;
-      
       int id_x_right_up   = id_x_up + numGap;
       int id_x_left_up    = id_x_up - numGap;
       int id_x_right_down = id_x_down + numGap;
       int id_x_left_down  = id_x_down - numGap;
       
-      int id_y_right_up   = id_x_right_up   + numTotalPoints;
-      int id_y_left_up    = id_x_left_up    + numTotalPoints;
-      int id_y_right_down = id_x_right_down + numTotalPoints;
-      int id_y_left_down  = id_x_left_down  + numTotalPoints;
-      
-      // 1. alpha, beta, gamma coefficient
-      double delta_x_xi  = coordinates[id_x_right] - coordinates[id_x_left];
-      double delta_x_eta = coordinates[id_x_up]    - coordinates[id_x_down];
-      
-      double delta_y_xi  = coordinates[id_y_right] - coordinates[id_y_left];
-      double delta_y_eta = coordinates[id_y_up]    - coordinates[id_y_down];
-      
-      double alpha = (delta_x_eta*delta_x_eta + delta_y_eta*delta_y_eta)/8.0;
-      double beta  = (delta_x_xi*delta_x_eta  + delta_y_xi*delta_y_eta)/16.0;
-      double gamma = (delta_x_xi*delta_x_xi   + delta_y_xi*delta_y_xi)/8.0;
-      
       // Update
       double coordinateOld_x = coordinates[id_x];
       double coordinateOld_y = coordinates[id_y];
       
-      coordinates[id_x] = (
-        alpha*(coordinates[id_x_left] + coordinates[id_x_right]) +
-        gamma*(coordinates[id_x_down] + coordinates[id_x_up]     -
-        beta*(
-          (coordinates[id_x_right_up]   + coordinates[id_x_left_down]) -
-          (coordinates[id_x_right_down] + coordinates[id_x_left_up])
-        )
-      )/(alpha + gamma);
-        
-      coordinates[id_y] = (
-        alpha*(coordinates[id_y_left] + coordinates[id_y_right]) +
-        gamma*(coordinates[id_y_down] + coordinates[id_y_up]     -
-        beta*(
-          (coordinates[id_y_right_up]   + coordinates[id_y_left_down]) -
-          (coordinates[id_y_right_down] + coordinates[id_y_left_up])
-        )
-      )/(alpha + gamma); 
-        
+      smoothPoint
+      (
+        coordinates[id_x] , 
+        coordinates[id_y] ,
+        coordinates[id_x_right]     , coordinates[id_x_right + numTotalPoints] ,
+        coordinates[id_x_up]        , coordinates[id_y_up    + numTotalPoints] ,
+        coordinates[id_x_left]      , coordinates[id_y_left  + numTotalPoints] ,  
+        coordinates[id_x_down]      , coordinates[id_y_down  + numTotalPoints] ,
+        coordinates[id_x_right_up]  , coordinates[id_x_right_up   + numTotalPoints] ,
+        coordinates[id_x_up_left]   , coordinates[id_y_up_left    + numTotalPoints] ,
+        coordinates[id_x_left_down] , coordinates[id_y_left_down  + numTotalPoints] ,  
+        coordinates[id_x_down_right], coordinates[id_y_down_right + numTotalPoints]    
+      );
+      
       residual[id_x] = coordinates[id_x] - coordinateOld_x;
       residual[id_y] = coordinates[id_y] - coordinateOld_y; 
         
