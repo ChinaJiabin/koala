@@ -234,6 +234,9 @@ void toyMesh2D::smoothPoint
 }
   
 double toyMesh2D::smoothBlockPoints
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 (
   const int& nX       ,
@@ -260,6 +263,7 @@ double toyMesh2D::smoothBlockPoints
       int id_x_up    = id_x + numGapPointsX;
       int id_x_down  = id_x - numGapPointsX;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
       int id_y_right = id_x_right + numTotalPoints;
       int id_y_left  = id_x_left  + numTotalPoints;
@@ -269,10 +273,14 @@ double toyMesh2D::smoothBlockPoints
 =======
       
 >>>>>>> origin/master
+=======
+      
+>>>>>>> origin/master
       int id_x_right_up   = id_x_up + numGap;
       int id_x_left_up    = id_x_up - numGap;
       int id_x_right_down = id_x_down + numGap;
       int id_x_left_down  = id_x_down - numGap;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
       int id_y_right_up   = id_x_right_up   + numTotalPoints;
@@ -318,6 +326,12 @@ double toyMesh2D::smoothBlockPoints
       // Update
       double coordinateOld_x = coordinates[id_x];
       double coordinateOld_y = coordinates[id_y];
+=======
+      
+      // Update
+      double coordinateOld_x = coordinates[id_x];
+      double coordinateOld_y = coordinates[id_y];
+>>>>>>> origin/master
       
       smoothPoint
       (
@@ -333,6 +347,9 @@ double toyMesh2D::smoothBlockPoints
         coordinates[id_x_down_right], coordinates[id_y_down_right + numTotalPoints]    
       );
       
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
       residual[id_x] = coordinates[id_x] - coordinateOld_x;
       residual[id_y] = coordinates[id_y] - coordinateOld_y;
@@ -873,9 +890,12 @@ void toyMesh2D::writePoints() const
 
       // :1. Smooth on original grid
 <<<<<<< HEAD
+<<<<<<< HEAD
       error += smoothEllipticEquation(nX, nY, &coordinates[0][0], &residual[0][0]);
 
 =======
+=======
+>>>>>>> origin/master
       error += smoothBlockPoints(nX, nY, &coordinates[0][0], &residual[0][0]);
       
 >>>>>>> origin/master
@@ -906,11 +926,14 @@ void toyMesh2D::writePoints() const
         for (int offset = 1; offset <= numPoints; offset++)
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
           double alpha = (
 
           )/4.0;
 
 =======
+=======
+>>>>>>> origin/master
           double pointOldX = points[linePointsId[offset][0]][0];
           double pointOldY = points[linePointsId[offset][0]][1];
           
@@ -931,6 +954,9 @@ void toyMesh2D::writePoints() const
           double residualY = pointOldY - points[linePointsId[offset][0]][1];
           
           error += residualX*residualX + residualY*residualY;
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
         }
       }
@@ -996,6 +1022,15 @@ void toyMesh2D::writeCells() const
   Run.openFile(file, "cells", NULL, filesPath);
   
   file << sizeCells << " 4" << "\n";
+<<<<<<< HEAD
+=======
+  
+  for (int blockId = 0; blockId < sizeBlocks; blockId++)
+  {
+    int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
+  }
+}
+>>>>>>> origin/master
   
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
