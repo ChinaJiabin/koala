@@ -932,6 +932,34 @@ void toyMesh2D::writeCells() const
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
     int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
+    
+    // Corner points
+    idPointsOfBlock[0][0]                                             = lines[4*blockId][LINE_POINT_FIRST_ID];
+    idPointsOfBlock[0][parBlocks[blockId].n[0]]                       = lines[4*blockId][LINE_POINT_END_ID];
+    idPointsOfBlock[parBlocks[blockId].n[1]][parBlocks[blockId].n[0]] = lines[4*blockId + 2][LINE_POINT_FIRST_ID];
+    idPointsOfBlock[parBlocks[blockId].n[1]][0]                       = lines[4*blockId + 2][LINE_POINT_END_ID];
+    
+    // Lines points
+    for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
+    {
+      
+    }
+    
+    // Internal points
+    for (int offsetY = 1; offsetY < parBlocks[blockId].n[1]; offsetY++)
+      for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
+        idPointsOfBlock[offsetY][offsetX] = 
+          pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
+    
+    // Write cells
+    for (int offsetY = 0; offsetY < parBlocks[blockId].n[1]; offsetY++)   
+      for (int offsetX = 0; offsetX < parBlocks[blockId].n[0]; offsetX++)
+      {
+        file << idPointsOfBlock[offsetY][offsetX]         << " ";
+        file << idPointsOfBlock[offsetY][offsetX + 1]     << " ";
+        file << idPointsOfBlock[offsetY + 1][offsetX + 1] << " ";
+        file << idPointsOfBlock[offsetY + 1][offsetX]     << "\n";
+      }
   }
 }
 
