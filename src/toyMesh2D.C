@@ -185,7 +185,7 @@ toyMesh2D::toyMesh2D
 
 void toyMesh2D::smoothPoint
 (
-  double& point_x , 
+  double& point_x ,
   double& point_y ,
   const double& point_x_right     , const double& point_y_right     ,
   const double& point_x_up        , const double& point_y_up        ,
@@ -199,16 +199,16 @@ void toyMesh2D::smoothPoint
 {
   double delta_x_xi  = point_x_right - point_x_left;
   double delta_x_eta = point_x_up    - point_x_down;
-      
+
   double delta_y_xi  = point_y_right - point_y_left;
   double delta_y_eta = point_y_up    - point_y_down;
-      
+
   double alpha = (delta_x_eta * delta_x_eta  + delta_y_eta * delta_y_eta)/8.0;
   double beta  = (delta_x_xi  * delta_x_eta  + delta_y_xi  * delta_y_eta)/16.0;
   double gamma = (delta_x_xi  * delta_x_xi   + delta_y_xi  * delta_y_xi)/8.0;
-  
+
   double sumAlphaGamma = alpha + gamma;
-  
+
   point_x = (
     alpha*(point_x_left + point_x_right) +
     gamma*(point_x_down + point_x_up)    -
@@ -217,7 +217,7 @@ void toyMesh2D::smoothPoint
       (point_x_down_right + point_x_up_left)
     )
   )/sumAlphaGamma;
-  
+
   point_y = (
     alpha*(point_y_left + point_y_right) +
     gamma*(point_y_down + point_y_up)    -
@@ -227,7 +227,7 @@ void toyMesh2D::smoothPoint
     )
   )/sumAlphaGamma;
 }
-  
+
 double toyMesh2D::smoothBlockPoints
 (
   const int& nX       ,
@@ -259,25 +259,25 @@ double toyMesh2D::smoothBlockPoints
       int id_x_right_down = id_x_down + numGap;
       int id_x_left_down  = id_x_down - numGap;
 
-      
+
       // Update
       double coordinateOld_x = coordinates[id_x];
       double coordinateOld_y = coordinates[id_y];
-      
+
       smoothPoint
       (
-        coordinates[id_x] , 
+        coordinates[id_x] ,
         coordinates[id_y] ,
         coordinates[id_x_right]     , coordinates[id_x_right + numTotalPoints] ,
         coordinates[id_x_up]        , coordinates[id_y_up    + numTotalPoints] ,
-        coordinates[id_x_left]      , coordinates[id_y_left  + numTotalPoints] ,  
+        coordinates[id_x_left]      , coordinates[id_y_left  + numTotalPoints] ,
         coordinates[id_x_down]      , coordinates[id_y_down  + numTotalPoints] ,
         coordinates[id_x_right_up]  , coordinates[id_x_right_up   + numTotalPoints] ,
         coordinates[id_x_up_left]   , coordinates[id_y_up_left    + numTotalPoints] ,
-        coordinates[id_x_left_down] , coordinates[id_y_left_down  + numTotalPoints] ,  
-        coordinates[id_x_down_right], coordinates[id_y_down_right + numTotalPoints]    
+        coordinates[id_x_left_down] , coordinates[id_y_left_down  + numTotalPoints] ,
+        coordinates[id_x_down_right], coordinates[id_y_down_right + numTotalPoints]
       );
-      
+
       residual[id_x] = coordinates[id_x] - coordinateOld_x;
       residual[id_y] = coordinates[id_y] - coordinateOld_y;
 
@@ -817,7 +817,7 @@ void toyMesh2D::writePoints() const
 
       // :1. Smooth on original grid
       error += smoothBlockPoints(nX, nY, &coordinates[0][0], &residual[0][0]);
-      
+
       // :2. Restriction operation
       restriction(nX, nY, &residual[0][0]);
 
@@ -846,7 +846,7 @@ void toyMesh2D::writePoints() const
         {
           double pointOldX = points[linePointsId[offset][0]][0];
           double pointOldY = points[linePointsId[offset][0]][1];
-          
+
           smoothPoint
           (
             points[linePointsId[offset][0]][0]    , points[linePointsId[offset][0]][1]     ,
@@ -857,12 +857,12 @@ void toyMesh2D::writePoints() const
             points[linePointsId[offset + 1][2]][0], points[linePointsId[offset + 1][2]][1] ,
             points[linePointsId[offset + 1][1]][0], points[linePointsId[offset + 1][1]][1] ,
             points[linePointsId[offset - 1][1]][0], points[linePointsId[offset - 1][1]][1] ,
-            points[linePointsId[offset - 1][2]][0], points[linePointsId[offset - 1][2]][1] 
+            points[linePointsId[offset - 1][2]][0], points[linePointsId[offset - 1][2]][1]
           );
-          
+
           double residualX = pointOldX - points[linePointsId[offset][0]][0];
           double residualY = pointOldY - points[linePointsId[offset][0]][1];
-          
+
           error += residualX*residualX + residualY*residualY;
         }
       }
@@ -874,23 +874,23 @@ void toyMesh2D::writePoints() const
       {
         double pointOldX = points[commonPointsId[i][0]][0];
         double pointOldY = points[commonPointsId[i][0]][1];
-        
+
         smoothPoint
         (
           points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
-          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,  
-          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,     
           points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
-          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,         
-          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,         
-          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,          
-          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,          
-          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1]        
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1] ,
+          points[commonPointsId[i][0]][0], points[commonPointsId[i][0]][1]
         );
-        
+
         double residualX = pointOldX - points[commonPointsId[i][0]][0];
         double residualY = pointOldY - points[commonPointsId[i][0]][1];
-          
+
         error += residualX*residualX + residualY*residualY;
       }
       else
@@ -899,7 +899,7 @@ void toyMesh2D::writePoints() const
 
     if (++numIter > 1e4)
     {
-      std::cout<< "Reach the maximum number of iteration for map2D!" << std::endl;
+      std::cout << "Reach the maximum number of iteration for map2D!" << std::endl;
       break;
     }
 
@@ -910,8 +910,8 @@ void toyMesh2D::writePoints() const
       break;
   }
 
-  std::cout<< "Number of iteration = " << numIter
-           << " Error = " << error << std::endl;
+  std::cout << "Number of iteration = " << numIter
+            << " Error = " << error << std::endl;
 
   // Write
   std::ofstream file;
@@ -926,9 +926,9 @@ void toyMesh2D::writeCells() const
 {
   std::ofstream file;
   Run.openFile(file, "cells", NULL, filesPath);
-  
+
   file << sizeCells << " 4" << "\n";
-  
+
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
     int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];

@@ -9,7 +9,7 @@ parRun::parRun()
 {
   if ( ( path = getcwd(NULL, 0) ) == NULL )
   {
-    std::cout<< "Error: getcwd()" << std::endl;
+    std::cout << "Error: getcwd()" << std::endl;
     exit(1);
   }
 }
@@ -34,7 +34,7 @@ std::string parRun::getFileFullPath
   if (fileName)
   {
     fileFullPath.append("fileName");
-    
+
     if (fileSuffix)
       fileFullPath.append(fileSuffix);
   }
@@ -57,12 +57,12 @@ void openFile
   file.open(getFileFullPath(fileName, fileSuffix, filePath).data());
   if (file.is_open())
   {
-    std::cout<< "Can't not find "
-             << getFileFullPath(fileName, fileSuffix, filePath).data()
-             << std::endl;
+    std::cout << "Can't not find "
+              << getFileFullPath(fileName, fileSuffix, filePath).data()
+              << std::endl;
     exit(1);
   }
-} 
+}
 
 // IO: write file
 void openFile
@@ -79,10 +79,10 @@ void openFile
   file.open(getFileFullPath(fileName, fileSuffix, filePath).data());
   if (file.is_open())
   {
-    std::cout<< "File path "
-             << getFileFullPath(NULL, NULL, filePath).data()
-             << std::endl;
+    std::cout << "File path "
+              << getFileFullPath(NULL, NULL, filePath).data()
+              << std::endl;
     exit(1);
   }
-} 
+}
 }
