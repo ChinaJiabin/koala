@@ -181,13 +181,8 @@ toyMesh2D::toyMesh2D
     trackingId += parBlocks[i].SizeInnerPoints();
   }
   pointsInBlocksIndex[sizeBlocks] = trackingId;
-<<<<<<< HEAD
 }
 
-double toyMesh2D::smoothEllipticEquation
-=======
-} 
-  
 void toyMesh2D::smoothPoint
 (
   double& point_x , 
@@ -208,9 +203,9 @@ void toyMesh2D::smoothPoint
   double delta_y_xi  = point_y_right - point_y_left;
   double delta_y_eta = point_y_up    - point_y_down;
       
-  double alpha = (delta_x_eta*delta_x_eta + delta_y_eta*delta_y_eta)/8.0;
-  double beta  = (delta_x_xi*delta_x_eta  + delta_y_xi*delta_y_eta)/16.0;
-  double gamma = (delta_x_xi*delta_x_xi   + delta_y_xi*delta_y_xi)/8.0;
+  double alpha = (delta_x_eta * delta_x_eta  + delta_y_eta * delta_y_eta)/8.0;
+  double beta  = (delta_x_xi  * delta_x_eta  + delta_y_xi  * delta_y_eta)/16.0;
+  double gamma = (delta_x_xi  * delta_x_xi   + delta_y_xi  * delta_y_xi)/8.0;
   
   double sumAlphaGamma = alpha + gamma;
   
@@ -234,10 +229,6 @@ void toyMesh2D::smoothPoint
 }
   
 double toyMesh2D::smoothBlockPoints
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 (
   const int& nX       ,
   const int& nY       ,
@@ -262,76 +253,16 @@ double toyMesh2D::smoothBlockPoints
       int id_x_left  = id_x - numGap;
       int id_x_up    = id_x + numGapPointsX;
       int id_x_down  = id_x - numGapPointsX;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-      int id_y_right = id_x_right + numTotalPoints;
-      int id_y_left  = id_x_left  + numTotalPoints;
-      int id_y_up    = id_x_up    + numTotalPoints;
-      int id_y_down  = id_x_down  + numTotalPoints;
-
-=======
-      
->>>>>>> origin/master
-=======
-      
->>>>>>> origin/master
       int id_x_right_up   = id_x_up + numGap;
       int id_x_left_up    = id_x_up - numGap;
       int id_x_right_down = id_x_down + numGap;
       int id_x_left_down  = id_x_down - numGap;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-      int id_y_right_up   = id_x_right_up   + numTotalPoints;
-      int id_y_left_up    = id_x_left_up    + numTotalPoints;
-      int id_y_right_down = id_x_right_down + numTotalPoints;
-      int id_y_left_down  = id_x_left_down  + numTotalPoints;
-
-      // 1. alpha, beta, gamma coefficient
-      double delta_x_xi  = coordinates[id_x_right] - coordinates[id_x_left];
-      double delta_x_eta = coordinates[id_x_up]    - coordinates[id_x_down];
-
-      double delta_y_xi  = coordinates[id_y_right] - coordinates[id_y_left];
-      double delta_y_eta = coordinates[id_y_up]    - coordinates[id_y_down];
-
-      double alpha = (delta_x_eta*delta_x_eta + delta_y_eta*delta_y_eta)/8.0;
-      double beta  = (delta_x_xi*delta_x_eta  + delta_y_xi*delta_y_eta)/16.0;
-      double gamma = (delta_x_xi*delta_x_xi   + delta_y_xi*delta_y_xi)/8.0;
-
-      // Update
-      double coordinateOld_x = coordinates[id_x];
-      double coordinateOld_y = coordinates[id_y];
-
-      coordinates[id_x] = (
-        alpha*(coordinates[id_x_left] + coordinates[id_x_right]) +
-        gamma*(coordinates[id_x_down] + coordinates[id_x_up]     -
-        beta*(
-          (coordinates[id_x_right_up]   + coordinates[id_x_left_down]) -
-          (coordinates[id_x_right_down] + coordinates[id_x_left_up])
-        )
-      )/(alpha + gamma);
-
-      coordinates[id_y] = (
-        alpha*(coordinates[id_y_left] + coordinates[id_y_right]) +
-        gamma*(coordinates[id_y_down] + coordinates[id_y_up]     -
-        beta*(
-          (coordinates[id_y_right_up]   + coordinates[id_y_left_down]) -
-          (coordinates[id_y_right_down] + coordinates[id_y_left_up])
-        )
-      )/(alpha + gamma);
-
-=======
       
       // Update
       double coordinateOld_x = coordinates[id_x];
       double coordinateOld_y = coordinates[id_y];
-=======
-      
-      // Update
-      double coordinateOld_x = coordinates[id_x];
-      double coordinateOld_y = coordinates[id_y];
->>>>>>> origin/master
       
       smoothPoint
       (
@@ -347,10 +278,6 @@ double toyMesh2D::smoothBlockPoints
         coordinates[id_x_down_right], coordinates[id_y_down_right + numTotalPoints]    
       );
       
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
       residual[id_x] = coordinates[id_x] - coordinateOld_x;
       residual[id_y] = coordinates[id_y] - coordinateOld_y;
 
@@ -889,16 +816,8 @@ void toyMesh2D::writePoints() const
       memset(residual, 0, 2*(nY + 1)*(nX + 1)*sizeof(double));
 
       // :1. Smooth on original grid
-<<<<<<< HEAD
-<<<<<<< HEAD
-      error += smoothEllipticEquation(nX, nY, &coordinates[0][0], &residual[0][0]);
-
-=======
-=======
->>>>>>> origin/master
       error += smoothBlockPoints(nX, nY, &coordinates[0][0], &residual[0][0]);
       
->>>>>>> origin/master
       // :2. Restriction operation
       restriction(nX, nY, &residual[0][0]);
 
@@ -925,15 +844,6 @@ void toyMesh2D::writePoints() const
 
         for (int offset = 1; offset <= numPoints; offset++)
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
-          double alpha = (
-
-          )/4.0;
-
-=======
-=======
->>>>>>> origin/master
           double pointOldX = points[linePointsId[offset][0]][0];
           double pointOldY = points[linePointsId[offset][0]][1];
           
@@ -954,10 +864,6 @@ void toyMesh2D::writePoints() const
           double residualY = pointOldY - points[linePointsId[offset][0]][1];
           
           error += residualX*residualX + residualY*residualY;
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
         }
       }
     }
@@ -1022,15 +928,6 @@ void toyMesh2D::writeCells() const
   Run.openFile(file, "cells", NULL, filesPath);
   
   file << sizeCells << " 4" << "\n";
-<<<<<<< HEAD
-=======
-  
-  for (int blockId = 0; blockId < sizeBlocks; blockId++)
-  {
-    int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
-  }
-}
->>>>>>> origin/master
   
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
