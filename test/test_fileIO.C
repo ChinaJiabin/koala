@@ -1,12 +1,14 @@
+#include <iostream>
 #include "parRun.H"
-using namespace Koala
+using namespace Koala;
+
 int main(int argc, char* argv[])
 {
   parRun Run;
 
   // File testInput only contains 1
   std::ifstream file;
-  Run.openfile(file, "testInput", NULL, NULL);
+  Run.openFile(file, "testInput", NULL, NULL);
 
   int anIntBuffer;
   file >> anIntBuffer;
