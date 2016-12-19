@@ -47,5 +47,6 @@ public:
         ) const;
 };
 }
+#include "parRun.C"
 
 #endif
