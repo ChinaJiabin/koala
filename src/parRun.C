@@ -43,7 +43,7 @@ std::string parRun::getFileFullPath
 }
 
 // IO: read file
-void openFile
+void parRun::openFile
 (
   std::ifstream& file    ,
   const char* fileName   ,
@@ -60,12 +60,12 @@ void openFile
     std::cout << "Can't not find "
               << getFileFullPath(fileName, fileSuffix, filePath).data()
               << std::endl;
-    exit(1);
+    return 0;
   }
 }
 
 // IO: write file
-void openFile
+void parRun::openFile
 (
   std::ofstream& file    ,
   const char* fileName   ,
@@ -82,7 +82,7 @@ void openFile
     std::cout << "File path "
               << getFileFullPath(NULL, NULL, filePath).data()
               << std::endl;
-    exit(1);
+    return 0;
   }
 }
 }
