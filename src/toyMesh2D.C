@@ -68,14 +68,14 @@ toyMesh2D::toyMesh2D
   // Read parameters of lines
   parLinesIndex    = new int[4*sizeBlocks + 1];
   parLinesIndex[0] = 0;
-  for（int i = 1; i < 4*sizeBlocks + 1; i++)
+  for (int i = 1; i < 4*sizeBlocks + 1; i++)
   {
     file >> parLinesIndex[i];
     parLinesIndex[i] += parLinesIndex[i - 1];
   }
 
   parLines = new double [parLinesIndex[4*sizeBlocks]];
-  for（int i = 0; i < parLinesIndex[4*sizeBlocks]; i++)
+  for (int i = 0; i < parLinesIndex[4*sizeBlocks]; i++)
     file >> parLines[i];
 
   // Boundary
