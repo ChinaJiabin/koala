@@ -10,7 +10,7 @@ parRun::parRun()
   if ( ( path = getcwd(NULL, 0) ) == NULL )
   {
     std::cout << "Error: getcwd()" << std::endl;
-    return 0;
+    return;
   }
 }
 
@@ -60,7 +60,7 @@ void parRun::openFile
     std::cout << "Can't not find "
               << getFileFullPath(fileName, fileSuffix, filePath).data()
               << std::endl;
-    return 0;
+    return;
   }
 }
 
@@ -82,7 +82,7 @@ void parRun::openFile
     std::cout << "File path "
               << getFileFullPath(NULL, NULL, filePath).data()
               << std::endl;
-    return 0;
+    return;
   }
 }
 }
