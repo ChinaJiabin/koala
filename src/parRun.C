@@ -1,3 +1,5 @@
+#include <unistd.h>
+#include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -10,7 +12,7 @@ parRun::parRun()
   if ( ( path = getcwd(NULL, 0) ) == NULL )
   {
     std::cout << "Error: getcwd()" << std::endl;
-    return;
+    exit(1);
   }
 }
 
@@ -27,13 +29,13 @@ std::string parRun::getFileFullPath
   fileFullPath.append("/");
   if (filePath)
   {
-    fileFullPath.append("filePath");
+    fileFullPath.append(filePath);
     fileFullPath.append("/");
   }
 
   if (fileName)
   {
-    fileFullPath.append("fileName");
+    fileFullPath.append(fileName);
 
     if (fileSuffix)
       fileFullPath.append(fileSuffix);
@@ -55,12 +57,12 @@ void parRun::openFile
     file.close();
 
   file.open(getFileFullPath(fileName, fileSuffix, filePath).data());
-  if (file.is_open())
+  if (!file.is_open())
   {
     std::cout << "Can't not find "
               << getFileFullPath(fileName, fileSuffix, filePath).data()
               << std::endl;
-    return;
+    exit(1);
   }
 }
 
@@ -77,12 +79,12 @@ void parRun::openFile
     file.close();
 
   file.open(getFileFullPath(fileName, fileSuffix, filePath).data());
-  if (file.is_open())
+  if (!file.is_open())
   {
     std::cout << "File path "
               << getFileFullPath(NULL, NULL, filePath).data()
               << std::endl;
-    return;
+    exit(1);
   }
 }
 }
