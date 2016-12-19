@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
   if (anIntBuffer != 1)
   {
     std::cout << "Test fileIO not pass!" << std::endl;
-    exit(1);
+    return 0;
   }
 
   std::cout << "Test fileIO pass!" << std::endl;
