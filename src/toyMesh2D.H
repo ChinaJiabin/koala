@@ -25,6 +25,7 @@ public:
         inline int SizeInnerFaces()  const{ return n[0]*(n[1] - 1) + n[1]*(n[0] - 1); }
 };
 
+typedef double (*listPoints2D)[2];
 typedef int (*listLines2D)[5];
 
 class toyMesh2D
@@ -102,5 +103,6 @@ public:
         virtual void writeBoundaryFacesId()  const;
 };
 }
+#include "toyMesh2D.C"
 
 #endif
