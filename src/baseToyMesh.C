@@ -94,7 +94,7 @@ void baseToyMesh::lineMap1D
     return;
   
   double map[size];
-  equalRatioDistribution(map, size,ratio, type);
+  equalRatioDistribution1D(map, size,ratio, type);
   
   for (int i = 0; i < size; i++)
     for (int j = 0; j < dim; j++)
