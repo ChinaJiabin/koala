@@ -23,11 +23,8 @@ void intSwap(int& a, int& b)
 
 parBlock2D::parBlock2D()
 {
-  type = new int[4]; // Suggest: Type use char instead of int
-  n    = new int[2];
-
-  memset(type, 0, 4*sizeof(int));
-  memset(n   , 0, 2*sizeof(int));
+  type = new int[4](); // Suggest: Type use char instead of int
+  n    = new int[2]();
 }
 
 toyMesh2D::toyMesh2D
