@@ -29,7 +29,7 @@ parBlock2D::parBlock2D()
 
 toyMesh2D::toyMesh2D
 (
-  const parRun& Run ,
+  const parRun& Run_ ,
   const char* inputFileName_
 )
 :
@@ -92,12 +92,12 @@ toyMesh2D::toyMesh2D
     file >> patchName;
     patchesName += patchName;
     patchesName.append("\n");
-  }
 
-  for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
-  {
-    file >> boundaryFaces[j][0];
-    file >> boundaryFaces[j][1];
+    for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+    {
+      file >> boundaryFaces[j][0];
+      file >> boundaryFaces[j][1];
+    }
   }
 
   // Loop blocks
@@ -111,38 +111,38 @@ toyMesh2D::toyMesh2D
 
   lines = new int[4*sizeBlocks][5];
 
-  for (int = 0; i < sizeBlocks; i++)
+  for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
-    sizePoints     += parBlocks[i].SizePoints() - 4;
-    sizeCells      += parBlocks[i].SizeCells();
-    sizeInnerFaces += parBlocks[i].SizeInnerFaces();
+    sizePoints     += parBlocks[blockId].SizePoints() - 4;
+    sizeCells      += parBlocks[blockId].SizeCells();
+    sizeInnerFaces += parBlocks[blockId].SizeInnerFaces();
 
-    cellsIndex[i + 1] = sizeCells;
+    cellsIndex[blockId + 1] = sizeCells;
 
-    int*        blockPointsId = &blocks[4*i];
-    listLines2D blockLines    = &lines[4*i];
-    for ( j = 0; j < 4; j++)
+    int *blockPointsId     = &blocks[4*blockId];
+    listLines2D blockLines = &lines[4*blockId];
+    for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
     {
-      blockLines[j][LINE_POINT_FIRST_ID] = blockPointsId[j];         // First points Id of line
-      blockLines[j][LINE_POINT_END_ID]   = blockPointsId[(j + 1)%4]; // Second point Id of line
-      blockLines[j][2]                   = ++sizeLines;              // Id
-      blockLines[j][3]                   = -1;                       // Line Id(0,1,2,3) in neighbour block
-      blockLines[j][4]                   = -1;                       // Neighbour block Id
+      blockLines[lineIdInBlock][LINE_POINT_FIRST_ID] = blockPointsId[lineIdInBlock];         // First points Id of line
+      blockLines[lineIdInBlock][LINE_POINT_END_ID]   = blockPointsId[(lineIdInBlock + 1)%4]; // Second point Id of line
+      blockLines[lineIdInBlock][2]                   = ++sizeLines;                          // Id
+      blockLines[lineIdInBlock][3]                   = -1;                                   // Line Id(0,1,2,3) in neighbour block
+      blockLines[lineIdInBlock][4]                   = -1;                                   // Neighbour block Id
 
-      for (int k = 0; k < 4*i; k++)
-        if (lines[k][LINE_POINT_FIRST_ID] == blockLines[j][LINE_POINT_END_ID] &&
-            lines[k][LINE_POINT_END_ID]   == blockLines[j][LINE_POINT_FIRST_ID])
+      for (int globalId = 0; globalId < 4*blockId; globalId++)
+        if (lines[globalId][LINE_POINT_FIRST_ID] == blockLines[lineIdInBlock][LINE_POINT_END_ID] &&
+            lines[globalId][LINE_POINT_END_ID]   == blockLines[lineIdInBlock][LINE_POINT_FIRST_ID])
         {
-          lines[k][3] = j;
-          lines[k][4] = i;
+          lines[globalId][3] = lineIdInBlock;
+          lines[globalId][4] = blockId;
 
-          blockLines[j][2] = -lines[k][2];
-          blockLines[j][3] = k%4;
-          blockLines[j][4] = k/4;
+          blockLines[lineIdInBlock][2] = -lines[globalId][2];
+          blockLines[lineIdInBlock][3] = globalId%4;
+          blockLines[lineIdInBlock][4] = globalId/4;
 
-          int subscript = j%2;
-          sizePoints     -= (parBlocks[i].n[subscript] - 1);
-          sizeInnerFaces += parBlocks[i].n[subscript];
+          int subscript = lineIdInBlock%2;
+          sizePoints     -= (parBlocks[blockId].n[subscript] - 1);
+          sizeInnerFaces += parBlocks[blockId].n[subscript];
 
           sizeLines--;
           break;
