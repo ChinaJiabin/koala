@@ -341,7 +341,7 @@ double toyMesh2D::restriction
           residual[id_x_left_down  + numTotalPoints]
         )/4.0
       )/4.0;
-    ｝
+    }
 }
 
 double toyMesh2D::prolongation
