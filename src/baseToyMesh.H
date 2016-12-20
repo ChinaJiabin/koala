@@ -120,5 +120,6 @@ protected:
         ) const;
 };
 }
+#include "baseToyMesh.C"
 
 #endif
