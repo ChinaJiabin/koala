@@ -2,7 +2,7 @@
 #include "parRun.H"
 using namespace Koala;
 
-int main(int argc, char* argv[])
+int main(int argc, char const *argv[])
 {
   parRun Run;
 

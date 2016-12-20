@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include <string>
+#include <cstring>
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -562,7 +562,8 @@ void toyMesh2D::writePoints() const
     }
 
   // Inner block points Id
-  int innerBlockPointsId[sizePointsOfBlocks] = {0};
+  int innerBlockPointsId[sizePointsOfBlocks];
+  memset(innerBlockPointsId, 0, sizePointsOfBlocks*sizeof(int));
 
   for (int i = 0; i < 4*sizeBlocks; i++)
     if (lines[i][3] == -1)
@@ -660,12 +661,12 @@ void toyMesh2D::writePoints() const
         case 0:
           lineMap1D
           (
-            &points[lines[globalId][0]][0]         ,
-            &points[lines[globalId][1]][0]         ,
-            &points[pointsOnLinesIndex[lineId]][0] ,
-            numPoints                              ,
-            2                                      ,
-            parLines[parLinesIndex[globalId]]      ,
+            &points[lines[globalId][0]][0]                        ,
+            &points[lines[globalId][1]][0]                        ,
+            &points[pointsOnLinesIndex[lineId]][0]                ,
+            parLinesIndex[globalId + 1] - parLinesIndex[globalId] ,
+            2                                                     ,
+            parLines[parLinesIndex[globalId]]                     ,
             parLines[parLinesIndex[globalId] + 1]
           );
           break;
@@ -673,12 +674,12 @@ void toyMesh2D::writePoints() const
         case 1:
           arcMap1D
           (
-            &points[lines[globalId][0]][0]         ,
-            &points[lines[globalId][1]][0]         ,
-            &points[pointsOnLinesIndex[lineId]][0] ,
-            numPoints                              ,
-            parLines[parLinesIndex[globalId]]      ,
-            parLines[parLinesIndex[globalId] + 1]  ,
+            &points[lines[globalId][0]][0]                        ,
+            &points[lines[globalId][1]][0]                        ,
+            &points[pointsOnLinesIndex[lineId]][0]                ,
+            parLinesIndex[globalId + 1] - parLinesIndex[globalId] ,
+            parLines[parLinesIndex[globalId]]                     ,
+            parLines[parLinesIndex[globalId] + 1]                 ,
             parLines[parLinesIndex[globalId] + 2]
           );
           break;
@@ -930,13 +931,13 @@ void toyMesh2D::writeCells() const
   {
     listLines2D blockLines = &lines[4*blockId];
     int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
-    
+
     // Corner points
     idPointsOfBlock[0][0]                                             = lines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
     idPointsOfBlock[0][parBlocks[blockId].n[0]]                       = lines[LINE_BOTTOM][LINE_POINT_END_ID];
     idPointsOfBlock[parBlocks[blockId].n[1]][parBlocks[blockId].n[0]] = lines[LINE_TOP][LINE_POINT_FIRST_ID];
     idPointsOfBlock[parBlocks[blockId].n[1]][0]                       = lines[LINE_TOP][LINE_POINT_END_ID];
-    
+
     // Lines points
     // Bottom
     int lineId = abs(lines[LINE_BOTTOM][2]) - 1;
@@ -946,7 +947,7 @@ void toyMesh2D::writeCells() const
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
         idPointsOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] = i;
-    
+
     // Right
     lineId = abs(lines[LINE_RIGHT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
@@ -955,7 +956,7 @@ void toyMesh2D::writeCells() const
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] = i;
-    
+
     // Top
     lineId = abs(lines[LINE_TOP][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
@@ -964,7 +965,7 @@ void toyMesh2D::writeCells() const
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
         idPointsOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] = i;
-    
+
     // Left
     lineId = abs(lines[LINE_LEFT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
@@ -973,15 +974,15 @@ void toyMesh2D::writeCells() const
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][0] = i;
-                                                 
+
     // Internal points
     for (int offsetY = 1; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
-        idPointsOfBlock[offsetY][offsetX] = 
+        idPointsOfBlock[offsetY][offsetX] =
           pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
-    
+
     // Write cells
-    for (int offsetY = 0; offsetY < parBlocks[blockId].n[1]; offsetY++)   
+    for (int offsetY = 0; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 0; offsetX < parBlocks[blockId].n[0]; offsetX++)
       {
         file << idPointsOfBlock[offsetY][offsetX]         << " ";
@@ -1002,4 +1003,5 @@ void toyMesh2D::writeBoundaryPointsId() const
 
 void toyMesh2D::writeBoundaryFacesId() const
 {
+}
 }
