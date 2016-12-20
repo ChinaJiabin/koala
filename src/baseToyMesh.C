@@ -1,3 +1,4 @@
+#include <cmath>
 namespace Koala
 {
 
@@ -29,7 +30,7 @@ void baseToyMesh::equalRatioDistribution1D
   const int& type
 ) const
 {
-  if (ratio > 0 && abs(ratio - 1.0) > 1e-5)
+  if (ratio > 0 && fabs(ratio - 1.0) > 1e-5)
   {
     // Equal ratio distribution
     if (type == 0)
