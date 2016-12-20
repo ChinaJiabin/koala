@@ -1,4 +1,4 @@
-#include <cmath>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -562,8 +562,7 @@ void toyMesh2D::writePoints() const
     }
 
   // Inner block points Id
-  int innerBlockPointsId[sizePointsOfBlocks];
-  memset(innerBlockPointsId, 0, sizePointsOfBlocks*sizeof(int));
+  int innerBlockPointsId[sizePointsOfBlocks] = {0};
 
   for (int i = 0; i < 4*sizeBlocks; i++)
     if (lines[i][3] == -1)
@@ -587,7 +586,7 @@ void toyMesh2D::writePoints() const
 
     int (*linePointsId)[3] = &innerLinesPointsId[trackingId];
     int numPoints = pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
-    tracking += numPoints + 2;
+    trackingId += numPoints + 2;
 
     if (innerBlockPointsId[lines[i][0]] != -1)
     {
@@ -636,7 +635,7 @@ void toyMesh2D::writePoints() const
     }
 
     if (commonPointsId[i][1] != commonPointsId[i][commonPointsId[i].size() - 1])
-      intSwap(commonPoints[i][commonPointsId[i].size() - 1], commonPoints[i][commonPointsId[i].size() - 3]);
+      intSwap(commonPointsId[i][commonPointsId[i].size() - 1], commonPointsId[i][commonPointsId[i].size() - 3]);
   }
 
   // New points array
@@ -661,26 +660,26 @@ void toyMesh2D::writePoints() const
         case 0:
           lineMap1D
           (
-            &points[lines[i][0]][0]                ,
-            &points[lines[i][1]][0]                ,
+            &points[lines[globalId][0]][0]         ,
+            &points[lines[globalId][1]][0]         ,
             &points[pointsOnLinesIndex[lineId]][0] ,
             numPoints                              ,
             2                                      ,
-            parLines[parLinesIndex[i]]             ,
-            parLines[parLinesIndex[i] + 1]
+            parLines[parLinesIndex[globalId]]      ,
+            parLines[parLinesIndex[globalId] + 1]
           );
           break;
 
         case 1:
           arcMap1D
           (
-            &points[lines[i][0]][0]                ,
-            &points[lines[i][1]][0]                ,
+            &points[lines[globalId][0]][0]         ,
+            &points[lines[globalId][1]][0]         ,
             &points[pointsOnLinesIndex[lineId]][0] ,
             numPoints                              ,
-            parLines[parLinesIndex[i]]             ,
-            parLines[parLinesIndex[i] + 1]         ,
-            parLines[parLinesIndex[i] + 2]
+            parLines[parLinesIndex[globalId]]      ,
+            parLines[parLinesIndex[globalId] + 1]  ,
+            parLines[parLinesIndex[globalId] + 2]
           );
           break;
 
@@ -688,8 +687,8 @@ void toyMesh2D::writePoints() const
           givenPointsMap1D
           (
             &points[pointsOnLinesIndex[lineId]][0] ,
-            &parLines[parLinesIndex[i]]            ,
-            parLinesIndex[i + 1] - parLinesIndex[i]
+            &parLines[parLinesIndex[globalId]]     ,
+            parLinesIndex[globalId + 1] - parLinesIndex[globalId]
           );
           break;
       }
