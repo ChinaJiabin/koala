@@ -759,10 +759,10 @@ void toyMesh2D::writePoints() const
       // Four corner points
       for (int dim = 0; dim < 2; dim++)
       {
-        coordinates[dim*(nY + 1)][0]       = points[blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID]][i];
-        coordinates[dim*(nY + 1)][nX]      = points[blockLines[LINE_BOTTOM][LINE_POINT_END_ID]][i];
-        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[LINE_TOP][LINE_POINT_FIRST_ID]][i];
-        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[LINE_TOP][LINE_POINT_END_ID]][i];
+        coordinates[dim*(nY + 1)][0]       = points[blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID]][blockId];
+        coordinates[dim*(nY + 1)][nX]      = points[blockLines[LINE_BOTTOM][LINE_POINT_END_ID]][blockId];
+        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[LINE_TOP][LINE_POINT_FIRST_ID]][blockId];
+        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[LINE_TOP][LINE_POINT_END_ID]][blockId];
       }
 
       // Set initial value by calculating the intersection point of two lines
@@ -773,7 +773,7 @@ void toyMesh2D::writePoints() const
           const double& x1 = coordinates[offsetY][0];
           const double& y1 = coordinates[offsetY + (nY + 1)][0];
 
-          const double& X2 = coordinates[offsetY][nX];
+          const double& x2 = coordinates[offsetY][nX];
           const double& y2 = coordinates[offsetY + (nY + 1)][nX];
 
           for (int offsetX = 1; offsetX < nX; offsetX++)
@@ -948,7 +948,7 @@ void toyMesh2D::writeCells() const
         idPointsOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] = i;
     
     // Right
-    int lineId = abs(lines[LINE_RIGHT][2]) - 1;
+    lineId = abs(lines[LINE_RIGHT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (lines[LINE_RIGHT][2] < 0)
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] =
@@ -957,7 +957,7 @@ void toyMesh2D::writeCells() const
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] = i;
     
     // Top
-    int lineId = abs(lines[LINE_TOP][2]) - 1;
+    lineId = abs(lines[LINE_TOP][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (lines[LINE_TOP][2] > 0)
         idPointsOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] =
@@ -966,7 +966,7 @@ void toyMesh2D::writeCells() const
         idPointsOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] = i;
     
     // Left
-    int lineId = abs(lines[LINE_LEFT][2]) - 1;
+    lineId = abs(lines[LINE_LEFT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (lines[LINE_LEFT][2] > 0)
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][0] =
