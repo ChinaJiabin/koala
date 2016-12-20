@@ -155,7 +155,7 @@ toyMesh2D::toyMesh2D
   pointsOnLinesIndex    = new int[sizeLines + 1];
   pointsOnLinesIndex[0] = sizePointsOfBlocks;
   int trackingId        = sizePointsOfBlocks;
-  for (int = 0; i < 4*sizeBlocks; i++)
+  for (int i = 0; i < 4*sizeBlocks; i++)
   {
     if (lines[i][2] < 0)
       continue;
@@ -173,10 +173,10 @@ toyMesh2D::toyMesh2D
 
   // Index of points in blocks
   pointsInBlocksIndex = new int[sizeBlocks + 1];
-  for (int = 0; i < sizeBlocks; i++)
+  for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
-    pointsInBlocksIndex[i] = trackingId;
-    trackingId += parBlocks[i].SizeInnerPoints();
+    pointsInBlocksIndex[blockId] = trackingId;
+    trackingId += parBlocks[blockId].SizeInnerPoints();
   }
   pointsInBlocksIndex[sizeBlocks] = trackingId;
 }
@@ -253,9 +253,9 @@ double toyMesh2D::smoothBlockPoints
       int id_x_down  = id_x - numGapPointsX;
 
       int id_x_right_up   = id_x_up + numGap;
-      int id_x_left_up    = id_x_up - numGap;
-      int id_x_right_down = id_x_down + numGap;
+      int id_x_up_left    = id_x_up - numGap;
       int id_x_left_down  = id_x_down - numGap;
+      int id_x_down_right = id_x_down + numGap;
 
 
       // Update
@@ -267,13 +267,13 @@ double toyMesh2D::smoothBlockPoints
         coordinates[id_x] ,
         coordinates[id_y] ,
         coordinates[id_x_right]     , coordinates[id_x_right + numTotalPoints] ,
-        coordinates[id_x_up]        , coordinates[id_y_up    + numTotalPoints] ,
-        coordinates[id_x_left]      , coordinates[id_y_left  + numTotalPoints] ,
-        coordinates[id_x_down]      , coordinates[id_y_down  + numTotalPoints] ,
+        coordinates[id_x_up]        , coordinates[id_x_up    + numTotalPoints] ,
+        coordinates[id_x_left]      , coordinates[id_x_left  + numTotalPoints] ,
+        coordinates[id_x_down]      , coordinates[id_x_down  + numTotalPoints] ,
         coordinates[id_x_right_up]  , coordinates[id_x_right_up   + numTotalPoints] ,
-        coordinates[id_x_up_left]   , coordinates[id_y_up_left    + numTotalPoints] ,
-        coordinates[id_x_left_down] , coordinates[id_y_left_down  + numTotalPoints] ,
-        coordinates[id_x_down_right], coordinates[id_y_down_right + numTotalPoints]
+        coordinates[id_x_up_left]   , coordinates[id_x_up_left    + numTotalPoints] ,
+        coordinates[id_x_left_down] , coordinates[id_x_left_down  + numTotalPoints] ,
+        coordinates[id_x_down_right], coordinates[id_x_down_right + numTotalPoints]
       );
 
       residual[id_x] = coordinates[id_x] - coordinateOld_x;
