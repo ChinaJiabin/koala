@@ -123,8 +123,8 @@ void baseToyMesh::arcMap1D
   for (int i = 0; i < size; i++)
   {
     double angle_i = angle*map[i];
-    points[2*i]     = centerX + (startPoint[0] - centreX)*cos(angle_i) - (startPoint[1] - centreY)*sin(angle_i);
-    points[1 + 2*i] = centerY + (startPoint[0] - centreX)*sin(angle_i) + (startPoint[1] - centreY)*cos(angle_i);
+    points[2*i]     = centreX + (startPoint[0] - centreX)*cos(angle_i) - (startPoint[1] - centreY)*sin(angle_i);
+    points[1 + 2*i] = centreY + (startPoint[0] - centreX)*sin(angle_i) + (startPoint[1] - centreY)*cos(angle_i);
   }
 }
 
