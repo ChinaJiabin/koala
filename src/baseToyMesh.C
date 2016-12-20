@@ -15,7 +15,7 @@ baseToyMesh::baseToyMesh
 void baseToyMesh::writeBoundaryName() const
 {
   std::ofstream file;
-  Run.openFile(file, "boundary", NULl, filesPath);
+  Run.openFile(file, "boundary", NULL, filesPath);
 
   file << sizePatches << "\n";
   file << patchesName;
