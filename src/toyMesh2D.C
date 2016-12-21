@@ -562,21 +562,32 @@ void toyMesh2D::writePoints() const
     }
 
   // Inner block points Id
-  int innerBlockPointsId[sizePointsOfBlocks];
-  memset(innerBlockPointsId, 0, sizePointsOfBlocks*sizeof(int));
+  int isInnerBlockPoints[sizePointsOfBlocks];
+  memset(isInnerBlockPoints, 0, sizePointsOfBlocks*sizeof(int));
 
   for (int i = 0; i < 4*sizeBlocks; i++)
     if (lines[i][3] == -1)
     {
-      innerBlockPointsId[lines[i][0]] = -1;
-      innerBlockPointsId[lines[i][1]] = -1;
+      isInnerBlockPoints[lines[i][LINE_POINT_FIRST_ID]] = -1;
+      isInnerBlockPoints[lines[i][LINE_POINT_END_ID]]   = -1;
     }
+    else 
+    {
+      if (isInnerBlockPoints[lines[i][LINE_POINT_FIRST_ID]] != -1)
+        isInnerBlockPoints[lines[i][LINE_POINT_FIRST_ID]]++;
+
+      if (isInnerBlockPoints[lines[i][LINE_POINT_END_ID]] != -1)
+        isInnerBlockPoints[lines[i][LINE_POINT_END_ID]]++;
+    } 
 
   int sizeInnerBlockPoints = 0;
   for (int i = 0; i < sizePointsOfBlocks; i++)
-    if (innerBlockPointsId[i] == 0)
-      innerBlockPointsId[i] = sizeInnerBlockPoints++;
-
+    if (isInnerBlockPoints[i] != -1)
+      sizeInnerBlockPoints++;
+  
+  int singularPointsIndex[sizeInnerBlockPoints + 1];
+ 
+  /*
   trackingId = 0;
   std::vector<int> commonPointsId[sizeInnerBlockPoints];
   for (int i = 0; i < 4*sizeBlocks; i++)
@@ -638,6 +649,7 @@ void toyMesh2D::writePoints() const
     if (commonPointsId[i][1] != commonPointsId[i][commonPointsId[i].size() - 1])
       intSwap(commonPointsId[i][commonPointsId[i].size() - 1], commonPointsId[i][commonPointsId[i].size() - 3]);
   }
+  */
 
   // New points array
   double points[sizePoints][2];
