@@ -560,41 +560,50 @@ void toyMesh2D::writePoints() const
         }
       }
     }
-
+  /*
   // Inner block points Id
   int sizeInnerBlockPoints = sizePointsOfBlocks;
   int isInnerBlockPoints[sizePointsOfBlocks];
   memset(isInnerBlockPoints, 0, sizePointsOfBlocks*sizeof(int));
   
-  for (int i = 0; i < 4*sizeBlocks; i++)
-    if (lines[i][3] == -1)
+  for (int globalId = 0; globalId < 4*sizeBlocks; globalId++)
+    if (lines[globalId][3] == -1)
     {
-      isInnerBlockPoints[lines[i][LINE_POINT_FIRST_ID]] = -1;
-      isInnerBlockPoints[lines[i][LINE_POINT_END_ID]]   = -1;
+      isInnerBlockPoints[lines[globalId][LINE_POINT_FIRST_ID]] = -1;
+      isInnerBlockPoints[lines[globalId][LINE_POINT_END_ID]]   = -1;
       sizeInnerBlockPoints--;
     }
     else 
     {
-      if (isInnerBlockPoints[lines[i][LINE_POINT_FIRST_ID]] != -1)
-        isInnerBlockPoints[lines[i][LINE_POINT_FIRST_ID]]++;
+      if (isInnerBlockPoints[lines[globalId][LINE_POINT_FIRST_ID]] != -1)
+        isInnerBlockPoints[lines[globalId][LINE_POINT_FIRST_ID]]++;
 
-      if (isInnerBlockPoints[lines[i][LINE_POINT_END_ID]] != -1)
-        isInnerBlockPoints[lines[i][LINE_POINT_END_ID]]++;
+      if (isInnerBlockPoints[lines[globalId][LINE_POINT_END_ID]] != -1)
+        isInnerBlockPoints[lines[globalId][LINE_POINT_END_ID]]++;
     } 
-  
+  //
   int singularPointsIndex[sizeInnerBlockPoints + 1];
   singularPointsIndex[0] = 0;
   
   trackingId = 0;
   for (int i = 0; i < sizePointsOfBlocks; i++)
     if (isInnerBlockPoints[i] != -1)
-      singularPointsIndex[++trackingId] = 2*isInnerBlockPoints[i] + 1;
-  
+      singularPointsIndex[++trackingId] = 3*isInnerBlockPoints[i] + 1;
   for (int i = 0; i < sizePointsOfBlocks; i++)
     singularPointsIndex[i + 1] += singularPointsIndex[i];
   
+  //
+  trackingId = 0;
+  int *innerBlockPointsId = &isInnerBlockPoints[0];
+  for (int i = 0; i < sizePointsOfBlocks; i++)
+    if (isInnerBlockPoints[i] != -1)
+      innerBlockPointsId[i] = trackingId++;
+  
+  //
   trackingId = 0;
   int singularPointsId[singularPointsIndex[sizeInnerBlockPoints]];
+  memset(singularPointsId, -1, singularPointsIndex[sizeInnerBlockPoints]*sizeof(int));
+  
   for (int globalId = 0; globalId < 4*sizeBlocks; globalId++)
   {
     int lineId = lines[globalId][2] - 1;
@@ -607,62 +616,16 @@ void toyMesh2D::writePoints() const
 
     if (isInnerBlockPoints[lines[globalId][LINE_POINT_FIRST_ID]] != -1)
     {
+       int singularPointId = &singularPointsId[singularPointsIndex[innerBlockPointsId[lines[globalId][LINE_POINT_FIRST_ID]]]];
+       if (singularPointId[0] == -1)
+         singularPointId[0] = 
     } 
     
     if (isInnerBlockPoints[lines[globalId][LINE_POINT_END_ID]] != -1)
     {
     } 
   }
-      /*
-      if (commonPointsId[innerBlockPointsId[lines[i][0]]].empty())
-        commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(lines[i][0]);
-
-      commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(linePointsId[1][1]);
-      commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(linePointsId[1][0]);
-      commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(linePointsId[1][2]);
-    }
-
-    if (innerBlockPointsId[lines[i][1]] != -1)
-    {
-      if (commonPointsId[innerBlockPointsId[lines[i][1]]].empty())
-        commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(lines[i][1]);
-
-      commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(linePointsId[numPoints][1]);
-      commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(linePointsId[numPoints][0]);
-      commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(linePointsId[numPoints][2]);
-    }
-  }
-
-  for (int i = 0; i < sizeInnerBlockPoints; i++)
-  {
-    // Reorder
-    int startId = 3;
-    while (startId < commonPointsId[i].size())
-    {
-      for (int j = startId + 1; j < commonPointsId[i].size(); j++)
-        if (commonPointsId[i][startId] == commonPointsId[i][j])
-        {
-          if (j == startId + 3)
-            intSwap(commonPointsId[i][startId + 1], commonPointsId[i][startId + 3]);
-
-          else if (j > startId + 3 && j%3 == 1)
-            for (int k = 1; k <= 3; k++)
-              intSwap(commonPointsId[i][startId + k], commonPointsId[i][j + k - 1]);
-
-          else if (j%3 == 0)
-            for (int k = 1; k <= 3; k++)
-              intSwap(commonPointsId[i][startId + k], commonPointsId[i][j + 1 - k]);
-
-          break;
-        }
-      startId += 3;
-    }
-
-    if (commonPointsId[i][1] != commonPointsId[i][commonPointsId[i].size() - 1])
-      intSwap(commonPointsId[i][commonPointsId[i].size() - 1], commonPointsId[i][commonPointsId[i].size() - 3]);
-  }
   */
-
   // New points array
   double points[sizePoints][2];
 
@@ -891,6 +854,7 @@ void toyMesh2D::writePoints() const
     }
 
     // Smooth end points of lines and the points is not belong to boundary
+    /*
     for (int i = 0; i < sizeInnerBlockPoints; i++)
       if (commonPointsId[i].size() == 13)
       {
@@ -918,7 +882,7 @@ void toyMesh2D::writePoints() const
       else
       {
       }
-
+    */
     if (++numIter > 1e4)
     {
       std::cout << "Reach the maximum number of iteration for map2D!" << std::endl;
