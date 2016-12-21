@@ -995,6 +995,15 @@ void toyMesh2D::writeCells() const
 
 void toyMesh2D::writeFaces() const
 {
+  std::ofstream file;
+  std::ofstream fileO;
+  std::ofstream fileN;
+  
+  Run.openFile(file  , "face"     , NULL, filesPath);
+  Run.openFile(fileO , "owner"    , NULL, filesPath);
+  Run.openFile(fileN , "neighbour", NULL, filesPath);
+  
+  file << sizeInnerFaces << "\n";
 }
 
 void toyMesh2D::writeBoundaryPointsId() const
