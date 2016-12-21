@@ -562,14 +562,16 @@ void toyMesh2D::writePoints() const
     }
 
   // Inner block points Id
+  int sizeInnerBlockPoints = sizePointsOfBlocks;
   int isInnerBlockPoints[sizePointsOfBlocks];
   memset(isInnerBlockPoints, 0, sizePointsOfBlocks*sizeof(int));
-
+  
   for (int i = 0; i < 4*sizeBlocks; i++)
     if (lines[i][3] == -1)
     {
       isInnerBlockPoints[lines[i][LINE_POINT_FIRST_ID]] = -1;
       isInnerBlockPoints[lines[i][LINE_POINT_END_ID]]   = -1;
+      sizeInnerBlockPoints--;
     }
     else 
     {
@@ -579,29 +581,39 @@ void toyMesh2D::writePoints() const
       if (isInnerBlockPoints[lines[i][LINE_POINT_END_ID]] != -1)
         isInnerBlockPoints[lines[i][LINE_POINT_END_ID]]++;
     } 
-
-  int sizeInnerBlockPoints = 0;
-  for (int i = 0; i < sizePointsOfBlocks; i++)
-    if (isInnerBlockPoints[i] != -1)
-      sizeInnerBlockPoints++;
   
   int singularPointsIndex[sizeInnerBlockPoints + 1];
- 
-  /*
+  singularPointsIndex[0] = 0;
+  
   trackingId = 0;
-  std::vector<int> commonPointsId[sizeInnerBlockPoints];
-  for (int i = 0; i < 4*sizeBlocks; i++)
+  for (int i = 0; i < sizePointsOfBlocks; i++)
+    if (isInnerBlockPoints[i] != -1)
+      singularPointsIndex[++trackingId] = 2*isInnerBlockPoints[i] + 1;
+  
+  for (int i = 0; i < sizePointsOfBlocks; i++)
+    singularPointsIndex[i + 1] += singularPointsIndex[i];
+  
+  trackingId = 0;
+  int singularPointsId[singularPointsIndex[sizeInnerBlockPoints]];
+  for (int globalId = 0; globalId < 4*sizeBlocks; globalId++)
   {
-    int lineId = lines[i][2] - 1;
-    if (lineId < 0 || lines[i][3] == -1)
+    int lineId = lines[globalId][2] - 1;
+    if (lineId < 0 || lines[globalId][3] == -1)
       continue;
 
     int (*linePointsId)[3] = &innerLinesPointsId[trackingId];
     int numPoints = pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
     trackingId += numPoints + 2;
 
-    if (innerBlockPointsId[lines[i][0]] != -1)
+    if (isInnerBlockPoints[lines[globalId][LINE_POINT_FIRST_ID]] != -1)
     {
+    } 
+    
+    if (isInnerBlockPoints[lines[globalId][LINE_POINT_END_ID]] != -1)
+    {
+    } 
+  }
+      /*
       if (commonPointsId[innerBlockPointsId[lines[i][0]]].empty())
         commonPointsId[innerBlockPointsId[lines[i][0]]].push_back(lines[i][0]);
 
