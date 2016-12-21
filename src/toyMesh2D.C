@@ -1059,8 +1059,25 @@ void toyMesh2D::writeFaces() const
         idPointsOfBlock[offsetY][offsetX] =
           pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
 
-    // Write 
+    // Write faces in blocks
+    for (int offsetY = 0; offsetY < parBlocks[blockId].n[1]; offsetY++)
+      for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
+      {
+        file << idPointsOfBlock[offsetY][offsetX] << " " << idPointsOfBlock[offsetY + 1][offsetX] << "\n";
+        fileO << cellsIndex[blockId] + (offsetX - 1) + parBlocks[blockId].n[0]*offsetY << "\n";
+        fileN << cellsIndex[blockId] + offsetX       + parBlocks[blockId].n[0]*offsetY << "\n";
+      }
+    
+    for (int offsetY = 1; offsetY < parBlocks[blockId].n[1]; offsetY++)
+      for (int offsetX = 0; offsetX < parBlocks[blockId].n[0]; offsetX++)
+      {
+        file << idPointsOfBlock[offsetY][offsetX + 1] << " " << idPointsOfBlock[offsetY][offsetX] << "\n";
+        fileO << cellsIndex[blockId] + offsetX + parBlocks[blockId].n[0]*(offsetY - 1) << "\n";
+        fileN << cellsIndex[blockId] + offsetX + parBlocks[blockId].n[0]*offsetY << "\n";
+      }
   }
+  
+  // Write faces on block boundary
 }
 
 void toyMesh2D::writeBoundaryPointsId() const
