@@ -1078,6 +1078,70 @@ void toyMesh2D::writeFaces() const
   }
   
   // Write faces on block boundary
+  for (int globalId = 0; globalId < 4*sizeBlocks; globalId++)
+    if (lines[globalId][2] < 0)
+    {
+      int lineId = 1 - lines[globalId][2];
+      
+      int blockId        = globalId/4;
+      int numLineInBlock = globalId%4;
+       
+      const int& neighbourBlockId        = lines[globalId][4];
+      const int& numLineInNeighbourBlock = lines[globalId][3];
+      
+      int startId = pointsOnLinesIndex[lineId + 1] - 1;
+      int endId   = pointsOnLinesIndex[lineId];
+      
+      int ownerBuffer, neighbourBuffer;
+      switch (numLineInBlock)
+      {
+        case LINE_BOTTOM:
+          ownerBuffer = cellsIndex[blockId];
+          break;
+          
+        case LINE_RIGHT:
+          ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0] - 1;
+          break;
+        
+        case LINE_TOP:
+          ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*parBlocks[blockId].n[1] - 1;
+          break;
+          
+        case LINE_RIGHT:
+          ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*(parBlocks[blockId].n[1] - 1);
+          break;
+          
+      }
+      
+      switch (numLineInNeighbourBlock)
+      {
+        case LINE_BOTTOM:
+          neighbourBuffer = cellsIndex[neighbourBlockId] + parBlocks[neighbourBlockId].n[0] - 1;
+          break;
+          
+        case LINE_RIGHT:
+          neighbourBuffer = cellsIndex[neighbourBlockId] + parBlocks[neighbourBlockId].n[0]*parBlocks[neighbourBlockId].n[1] - 1;
+          break;
+        
+        case LINE_TOP:
+          neighbourBuffer = cellsIndex[neighbourBlockId] + parBlocks[neighbourBlockId].n[0]*(parBlocks[neighbourBlockId].n[1] - 1);
+          break;
+          
+        case LINE_RIGHT:
+          neighbourBuffer = cellsIndex[neighbourBlockId];
+          break;
+          
+      }
+      
+      fileO << ownerBuffer << "\n";
+      fileN << neighbourBuffer << "\n";
+      
+      if (startId < endId)
+        file << lines[globalId][LINE_POINT_FIRST_ID] << " " << lines[globalId][LINE_POINT_END_ID] << "\n";
+      else
+      {
+      }
+    }
 }
 
 void toyMesh2D::writeBoundaryPointsId() const
