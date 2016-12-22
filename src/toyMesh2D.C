@@ -1140,6 +1140,57 @@ void toyMesh2D::writeFaces() const
         file << lines[globalId][LINE_POINT_FIRST_ID] << " " << lines[globalId][LINE_POINT_END_ID] << "\n";
       else
       {
+        file << lines[globalId][LINE_POINT_FIRST_ID] << " " << startId << "\n";
+        while (startId >= endId)
+        {
+          switch (numLineInBlock)
+          { 
+            case LINE_BOTTOM:
+              ownerBuffer += 1;
+              break;
+              
+            case LINE_RIGHT:
+              ownerBuffer += parBlocks[blockId].n[0];
+              break;
+              
+            case LINE_TOP:
+              ownerBuffer -= 1;
+              break;
+              
+            case LINE_LEFT:
+              ownerBuffer -= parBlocks[blockId].n[0];
+              break;
+          }
+          fileO << ownerBuffer << "\n";
+          
+          switch (numLineInNeighbourBlock)
+          { 
+            case LINE_BOTTOM:
+              neighbourBuffer -= 1;
+              break;
+              
+            case LINE_RIGHT:
+              neighbourBuffer -= parBlocks[blockId].n[0];
+              break;
+              
+            case LINE_TOP:
+              neighbourBuffer += 1;
+              break;
+              
+            case LINE_LEFT:
+              neighbourBuffer += parBlocks[blockId].n[0];
+              break;
+          }
+          fileN << neighbourBuffer << "\n";
+          
+          if (startId == endId)
+            break;
+          
+          file << startId << " ";
+          --startId;
+          file << startId << "\n";
+        }
+        file << endId << " " << lines[globalId][LINE_POINT_END_ID] << "\n";
       }
     }
 }
