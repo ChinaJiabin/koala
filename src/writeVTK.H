@@ -1,6 +1,7 @@
 #ifndef writeVTK_H
 #define writeVTK_H
 
+#include "baseMesh.H"
 #include <fstream>
 namespace Koala
 {
@@ -50,6 +51,32 @@ void writeToyMeshVTK
   file << "</Points>\n";
   
   // Write cells
+  file << "<Cells>\n";
+  file << "<DataArray type='Int32' Name='connectivity' format='ascii'>\n";
+  
+  int cellVtkType = baseMesh::CellVtkType(sizePointsPerCell, dimension);
+  for (int i = 0; i < sizeCells; i++)
+    for (int j = 0; j < sizePointsPerCell; j++)
+    {
+      fileCells >> intBuffer;
+      file << intBuffer << " ";
+    }
+  file << "\n</DataArray>\n";
+  
+  file << "<DataArray type='Int32' Name='offsets' format='ascii'>\n";
+  for (int i = 0; i < sizeCells; i++)
+    file << sizePointsPerCell*(i + 1) << " ";
+  file << "\n</DataArray>\n";
+  
+  file << "<DataArray type='UInt8' Name='types' format='ascii'>\n";
+    for (int i = 0; i < sizeCells; i++)
+      file << cellVtkType << " ";
+  file << "\n</DataArray>\n";
+  
+  file << "</Cells>\n";
+  file << "</Piece>\n";
+  file << "</UnstructuredGrid>\n";
+  file << "</VTKFile>\n";
 }
 }
 
