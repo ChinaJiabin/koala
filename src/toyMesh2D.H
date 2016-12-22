@@ -90,7 +90,7 @@ public:
         toyMesh2D
         (
           const parRun& Run ,
-          const char* inputFileName_ = "toyMesh"
+          const char* inputFileName_ = "toyMesh2D"
         );
 
     // Write
