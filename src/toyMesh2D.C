@@ -1249,12 +1249,102 @@ void toyMesh2D::writeBoundaryPointsId() const
       
       //
       int lineId = blockLines[lineIdInBlock][2] - 1;
-      for (int k = pointsOnLinesIndex[lineId]; k < pointsOnLinesIndex
-           
+      for (int k = pointsOnLinesIndex[lineId]; k < pointsOnLinesIndex[lineId + 1]; k++)
+        file << k << " ";   
     }
 }
 
 void toyMesh2D::writeBoundaryFacesId() const
 {
+  std::ofstream file;
+  std::ofstream fileO;
+  
+  Run.openFile(file , "boundaryFaces", NULL, filesPath);
+  Run.openFile(fileO, "boundaryCells", NULL, filesPath);
+  
+  int sizeBoundaryFaces = 0;
+  for (int i = 0; i < sizePatches; i++)
+  {
+    for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+    {
+      const int& blockId = boundaryFaces[j][0];
+      sizeBoundaryFaces += boundaryFaces[j][1]%2 ? parBlocks[blockId].n[1] : parBlocks[blockId].n[0];
+    }
+    file << sizeBoundaryFaces << " ";
+  }
+  
+  for (int i = 0; i < sizePatches; i++)
+    for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+    {
+      const int& blockId        = boundaryFaces[j][0];
+      const int& numLineInBlock = boundaryFaces[j][1];    
+      
+      int globalId = 4*blockId + numLineInBlock;
+      
+      const int& linePoint1Id   = lines[globalId][0];
+      const int& linePoint2Id   = lines[globalId][1];
+     
+      int lineId  = lines[globalId][2] - 1;
+      int startId = pointsOnLinesIndex[lineId];
+      int endId   = pointsOnLinesIndex[lineId + 1] - 1;
+      
+      int ownerBuffer;
+      switch (numLineInBlock)
+      {
+        case LINE_BOTTOM:
+          ownerBuffer = cellsIndex[blockId];
+          break;
+          
+        case LINE_RIGHT:
+          ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0] - 1;
+          break;
+        
+        case LINE_TOP:
+          ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*parBlocks[blockId].n[1] - 1;
+          break;
+          
+        case LINE_RIGHT:
+          ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*(parBlocks[blockId].n[1] - 1);
+          break;
+      }
+      fileO << ownerBuffer << "\n";
+      
+      if (startId > endId)
+        file << linePoint1Id << " " << linePoint2Id << " ";
+      else
+      {
+        file << linePoint1Id << " " << startId << " ";
+        while (startId <= endId)
+        {
+          switch (numLineInBlock)
+          { 
+            case LINE_BOTTOM:
+              ownerBuffer += 1;
+              break;
+              
+            case LINE_RIGHT:
+              ownerBuffer += parBlocks[blockId].n[0];
+              break;
+              
+            case LINE_TOP:
+              ownerBuffer -= 1;
+              break;
+              
+            case LINE_LEFT:
+              ownerBuffer -= parBlocks[blockId].n[0];
+              break;
+          }
+          fileO << ownerBuffer << "\n";
+          
+          if (startId == endId)
+            break;
+          
+          file << startId << " ";
+          startId++;
+          file << startId << "\n";
+        }
+        file << endId << " " << linePoint2Id << "\n";
+      }
+    }
 }
 }
