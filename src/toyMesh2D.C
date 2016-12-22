@@ -201,11 +201,11 @@ void toyMesh2D::smoothPoint
   double delta_y_xi  = point_y_right - point_y_left;
   double delta_y_eta = point_y_up    - point_y_down;
 
-  double alpha = (delta_x_eta * delta_x_eta  + delta_y_eta * delta_y_eta)/8.0;
-  double beta  = (delta_x_xi  * delta_x_eta  + delta_y_xi  * delta_y_eta)/16.0;
-  double gamma = (delta_x_xi  * delta_x_xi   + delta_y_xi  * delta_y_xi)/8.0;
+  double alpha = (delta_x_eta * delta_x_eta  + delta_y_eta * delta_y_eta)/4.0;
+  double beta  = (delta_x_xi  * delta_x_eta  + delta_y_xi  * delta_y_eta)/8.0;
+  double gamma = (delta_x_xi  * delta_x_xi   + delta_y_xi  * delta_y_xi)/4.0;
 
-  double sumAlphaGamma = alpha + gamma;
+  double sumAlphaGamma = 2*(alpha + gamma);
 
   point_x = (
     alpha*(point_x_left + point_x_right) +
