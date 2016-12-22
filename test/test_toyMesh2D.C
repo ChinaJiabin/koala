@@ -25,5 +25,8 @@ int main(int argc, char const *argv[])
   std::cout << "Write boundary faces" << std::endl;
   mesh.writeBoubdaryFaces();
   
+  std::cout << "Convert to vtk format" << std::endl;
+  writeToyMeshVTK(Run, 2);
+  
   return 0;
 }
