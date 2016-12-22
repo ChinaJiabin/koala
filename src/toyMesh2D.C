@@ -661,12 +661,12 @@ void toyMesh2D::writePoints() const
         case 0:
           lineMap1D
           (
-            &points[lines[globalId][0]][0]                        ,
-            &points[lines[globalId][1]][0]                        ,
-            &points[pointsOnLinesIndex[lineId]][0]                ,
-            parLinesIndex[globalId + 1] - parLinesIndex[globalId] ,
-            2                                                     ,
-            parLines[parLinesIndex[globalId]]                     ,
+            &points[lines[globalId][0]][0]                              ,
+            &points[lines[globalId][1]][0]                              ,
+            &points[pointsOnLinesIndex[lineId]][0]                      ,
+            pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId] ,
+            2                                                           ,
+            parLines[parLinesIndex[globalId]]                           ,
             parLines[parLinesIndex[globalId] + 1]
           );
           break;
@@ -674,12 +674,12 @@ void toyMesh2D::writePoints() const
         case 1:
           arcMap1D
           (
-            &points[lines[globalId][0]][0]                        ,
-            &points[lines[globalId][1]][0]                        ,
-            &points[pointsOnLinesIndex[lineId]][0]                ,
-            parLinesIndex[globalId + 1] - parLinesIndex[globalId] ,
-            parLines[parLinesIndex[globalId]]                     ,
-            parLines[parLinesIndex[globalId] + 1]                 ,
+            &points[lines[globalId][0]][0]                              ,
+            &points[lines[globalId][1]][0]                              ,
+            &points[pointsOnLinesIndex[lineId]][0]                      ,
+            pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId] ,
+            parLines[parLinesIndex[globalId]]                           ,
+            parLines[parLinesIndex[globalId] + 1]                       ,
             parLines[parLinesIndex[globalId] + 2]
           );
           break;
