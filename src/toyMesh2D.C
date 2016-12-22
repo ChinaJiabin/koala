@@ -1254,7 +1254,7 @@ void toyMesh2D::writeBoundaryPointsId() const
     }
 }
 
-void toyMesh2D::writeBoundaryFacesId() const
+void toyMesh2D::writeBoundaryFaces() const
 {
   std::ofstream file;
   std::ofstream fileO;
