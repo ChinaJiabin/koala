@@ -23,7 +23,7 @@ void writeToyMeshVTK
   fileCells  >> sizePointsPerCell;
   
   std::ofstream file;
-  Run.openFile(file, "mesh", "vtu", "writeFiles");
+  Run.openFile(file, "mesh", ".vtu", "writeFiles");
   
   double doubleBuffer, intBuffer;
   // Write header
