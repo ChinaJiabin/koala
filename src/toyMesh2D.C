@@ -1197,6 +1197,47 @@ void toyMesh2D::writeFaces() const
 
 void toyMesh2D::writeBoundaryPointsId() const
 {
+  std::ofstream file;
+  Run.openFile(file, "boundaryPoints", NULL, filesPath);
+  
+  bool isWrite[sizePointsOfBlocks];
+  memset(isWrite, true, sizePointsOfBlocks*sizeof(bool));
+  
+  // Calculate number of points for per patch
+  int sizeBoundaryPoints = 0;
+  for (int i = 0; i < sizePatches; i++)
+  { 
+    for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+    {
+      const int& blockId       = boundaryFaces[j][0];
+      const int& lineIdInBlock = boundaryFaces[j][1];
+      
+      listLines2D blockLines = &lines[4*blockId];
+      int lineId = blockLines[lineIdInBlock][2] - 1;
+      sizeBoundaryPoints += pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
+      
+      for (int k = 0; k < 2; k++)
+      {
+        const int& pointId = blockLines[lineIdInBlock][k];
+        if (isWrite[pointId])
+        {
+          sizeBoundaryPoints++;
+          isWrite[pointId] =false;
+        }
+      }
+    }
+    file << sizeBoundaryPoints << " ";
+  }
+  
+  memset(isWrite, true, sizePointsOfBlocks*sizeof(bool));
+  for (int i = 0; i < sizePatches; i++)
+    for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+    {
+      const int& blockId       = boundaryFaces[j][0];
+      const int& lineIdInBlock = boundaryFaces[j][1];
+      
+      listLines2D blockLines = &lines[4*blockId];
+    }
 }
 
 void toyMesh2D::writeBoundaryFacesId() const
