@@ -1107,7 +1107,7 @@ void toyMesh2D::writeFaces() const
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*parBlocks[blockId].n[1] - 1;
           break;
           
-        case LINE_RIGHT:
+        case LINE_LEFT:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*(parBlocks[blockId].n[1] - 1);
           break;
           
@@ -1127,7 +1127,7 @@ void toyMesh2D::writeFaces() const
           neighbourBuffer = cellsIndex[neighbourBlockId] + parBlocks[neighbourBlockId].n[0]*(parBlocks[neighbourBlockId].n[1] - 1);
           break;
           
-        case LINE_RIGHT:
+        case LINE_LEFT:
           neighbourBuffer = cellsIndex[neighbourBlockId];
           break;
           
@@ -1303,7 +1303,7 @@ void toyMesh2D::writeBoundaryFacesId() const
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*parBlocks[blockId].n[1] - 1;
           break;
           
-        case LINE_RIGHT:
+        case LINE_LEFT:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*(parBlocks[blockId].n[1] - 1);
           break;
       }
