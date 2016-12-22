@@ -1,7 +1,29 @@
+#include "parRun.H"
 #include "toyMesh2D.H"
 using namespace Koala;
 
 int main(int argc, char const *argv[])
 {
+  parRun Run;
+  toyMesh2D mesh(Run);
+  
+  std::cout << "Write points" << std::endl;
+  mesh.writePoints();
+  
+  std::cout << "Write cells" << std::endl;
+  mesh.writeCells();
+  
+  std::cout << "Write faces" << std::endl;
+  mesh.writeFaces();
+  
+  std::cout << "Write boundary name" << std::endl;
+  mesh.writeBoundary();
+  
+  std::cout << "Write boundary points id" << std::endl;
+  mesh.writeBoundaryPointsId();
+  
+  std::cout << "Write boundary faces" << std::endl;
+  mesh.writeBoubdaryFaces();
+  
   return 0;
 }
