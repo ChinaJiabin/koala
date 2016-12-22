@@ -1237,6 +1237,20 @@ void toyMesh2D::writeBoundaryPointsId() const
       const int& lineIdInBlock = boundaryFaces[j][1];
       
       listLines2D blockLines = &lines[4*blockId];
+      for (int k = 0; k < 2; k++)
+      {
+        const int& pointId = blockLines[lineIdInBlock][k];
+        if (isWrite[pointId])
+        {
+          file << pointId << " ";
+          isWrite[pointId] =false;
+        }
+      }
+      
+      //
+      int lineId = blockLines[lineIdInBlock][2] - 1;
+      for (int k = pointsOnLinesIndex[lineId]; k < pointsOnLinesIndex
+           
     }
 }
 
