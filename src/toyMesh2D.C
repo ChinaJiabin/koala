@@ -760,10 +760,10 @@ void toyMesh2D::writePoints() const
       // Four corner points
       for (int dim = 0; dim < 2; dim++)
       {
-        coordinates[dim*(nY + 1)][0]       = points[blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID]][blockId];
-        coordinates[dim*(nY + 1)][nX]      = points[blockLines[LINE_BOTTOM][LINE_POINT_END_ID]][blockId];
-        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[LINE_TOP][LINE_POINT_FIRST_ID]][blockId];
-        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[LINE_TOP][LINE_POINT_END_ID]][blockId];
+        coordinates[dim*(nY + 1)][0]       = points[blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID]][dim];
+        coordinates[dim*(nY + 1)][nX]      = points[blockLines[LINE_BOTTOM][LINE_POINT_END_ID]][dim];
+        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[LINE_TOP][LINE_POINT_FIRST_ID]][dim];
+        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[LINE_TOP][LINE_POINT_END_ID]][dim];
       }
 
       // Set initial value by calculating the intersection point of two lines
