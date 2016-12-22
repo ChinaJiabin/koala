@@ -83,7 +83,7 @@ void parRun::openFile
   {
     std::cout << "File path "
               << getFileFullPath(NULL, NULL, filePath).data()
-              << std::endl;
+              << " is not existent!" << std::endl;
     exit(1);
   }
 }
