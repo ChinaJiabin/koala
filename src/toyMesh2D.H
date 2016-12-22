@@ -100,7 +100,7 @@ public:
         virtual void writeFaces()  const;  
 
         virtual void writeBoundaryPointsId() const;
-        virtual void writeBoundaryFacesId()  const;
+        virtual void writeBoundaryFaces()  const;
 };
 }
 #include "toyMesh2D.C"
