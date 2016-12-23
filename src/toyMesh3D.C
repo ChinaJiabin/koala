@@ -12,6 +12,9 @@ parBlock3D::parBlock3D()
   n    = new int[3]();
 }
 
+const int LINE_POINT_FIRST _ID = 0;
+const int LINE_POINT_END_ID    = 1;
+  
 const int faceLineId[6][4] =
   {
     {0, 3,  2,  1} ,
@@ -106,6 +109,30 @@ toyMesh2D::toyMesh2D
   sizeFaces  = 0;
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
+    sizePoints += parBlocks[blockId].SizePoints() - 8;
+    sizeCells  += parBlocks[blockId].SizeCells();
+
+    listLines3D blockLines = &lines[12*blockId];
+    int* blockPointsId     = &blocks[8*blockId];
+    for (int lineIdInBlock = 0; lineIdInBlock < 12; lineIdInBlock++)
+    {
+      if (lineIdInBlock < 4)
+      {
+        blockLines[lineIdInBlock][LINE_POINT_FIRST_ID] = blockPoints[lineIdInBlock];
+        blockLines[lineIdInBlock][LINE_POINT_END_ID]   = blockPoints[(lineIdInBlock + 1)%4];        
+      }
+      else if (lineIdInBlock < 8)
+      {
+        blockLines[lineIdInBlock][LINE_POINT_FIRST_ID] = blockPoints[(lineIdInBlock - 4)];
+        blockLines[lineIdInBlock][LINE_POINT_END_ID]   = blockPoints[lineIdInBlock];
+      }
+      else
+      {
+        blockLines[lineIdInBlock][LINE_POINT_FIRST_ID] = blockPoints[(lineIdInBlock - 4)];
+        blockLines[lineIdInBlock][LINE_POINT_END_ID]   = blockPoints[4 + (lineIdInBlock - 3)%4];
+      }
+      blockLines[lineIdInBlock][2] = ++sizeLines;
+    }
   }
 
 }
