@@ -132,6 +132,28 @@ toyMesh2D::toyMesh2D
         blockLines[lineIdInBlock][LINE_POINT_END_ID]   = blockPoints[4 + (lineIdInBlock - 3)%4];
       }
       blockLines[lineIdInBlock][2] = ++sizeLines;
+      
+      for (int globalLineId = 0; globalLineId < 12*blockId; globalLineId++)
+        if (
+             (lines[globalLineId][LINE_POINT_FIRST_ID] == blockLines[lineIdInBlock][LINE_POINT_FIRST_ID] &&
+              lines[globalLineId][LINE_POINT_END_ID]   == blockLines[lineIdInBlock][LINE_POINT_END_ID])
+             ||
+             (lines[globalLineId][LINE_POINT_FIRST_ID] == blockLines[lineIdInBlock][LINE_POINT_END_ID]   &&
+              lines[globalLineId][LINE_POINT_END_ID]   == blockLines[lineIdInBlock][LINE_POINT_FIRST_ID])
+           )
+        {
+          blockLines[lineIdInBlock][LINE_POINT_FIRST_ID] = lines[globalLineId][LINE_POINT_FIRST_ID];
+          blockLines[lineIdInBlock][LINE_POINT_END_ID]   = lines[globalLineId][LINE_POINT_END_ID];
+          blockLines[lineIdInBlock][2]                   = lines[globalLineId][2];
+          
+          if (j < 4 || j >= 8)
+            sizePoints -= (parBlocks[blockId].n[j%2] - 1);
+          else
+            sizePoints -= (parBlocks[blockId].n[2] - 1);
+          
+          sizeLines--;
+          break;
+        }
     }
   }
 
