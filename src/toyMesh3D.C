@@ -201,5 +201,7 @@ toyMesh2D::toyMesh2D
 
 }
   
-void toyMesh3D::
+void toyMesh3D::writePoints() const
+{
+}
 }
