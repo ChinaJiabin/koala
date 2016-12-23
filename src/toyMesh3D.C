@@ -160,12 +160,46 @@ toyMesh2D::toyMesh2D
     for (int faceIdInBlock = 0; faceIdInBlock < 6; faceIdInBlock++)
     {
       for (int lineIdInFace = 0; lineIdInFace < 4; lineIdInFace++)
-        blockFaces[faceIdInBlock][lineIdInFace] = abs(blockLines[faceLineId][lineIdInFace]][2]) - 1;
+        blockFaces[faceIdInBlock][lineIdInFace] = abs(blockLines[faceLineId[faceIdInBlock][lineIdInFace]][2]) - 1;
       
       blockFaces[faceIdInBlock][4] = ++sizeFaces;
       blockFaces[faceIdInBlock][5] = -1;
+      for (int globalFaceId = 0; globalFaceId < 6*blockId; globalFaceId++)
+      { 
+        int pointIdInFace = 0;
+        if (
+             blockFaces[faceIdInBlock][0] == faces[globalFaceId][pointIdInFace]   ||
+             blockFaces[faceIdInBlock][0] == faces[globalFaceId][++pointIdInFace] ||
+             blockFaces[faceIdInBlock][0] == faces[globalFaceId][++pointIdInFace] ||
+             blockFaces[faceIdInBlock][0] == faces[globalFaceId][++pointIdInFace] 
+           )
+          if (
+             )
+            {
+              blockFaces[faceIdInBlock][4] = -faces[globalFaceId][4];
+              blockFaces[faceIfInBlock][5] = pointIdInFace;
+            
+              if (faceIdInBlock < 2)
+                sizePoints -=(parBlocks[blockId].n[0] - 1)*(parBlocks[blockId].n[1] - 1);
+              else if (faceIdInBlock < 4)
+                sizePoints -=(parBlocks[blockId].n[1] - 1)*(parBlocks[blockId].n[2] - 1);               
+              else
+                sizePoints -=(parBlocks[blockId].n[2] - 1)*(parBlocks[blockId].n[0] - 1);                
+            }
+        }
+      }
     }
-  }
+    
+    // Index of points on lines
+    int trackingId     = sizePointsOfBlocks;
+    pointsOnLinesIndex = new int[sizeLines + 1];
+    pointsOnLinesIndex = trackingId;
+    
+    // Index of points on faces
+    
+    // Index of points in blocks
 
 }
+  
+void toyMesh3D::
 }
