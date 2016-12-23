@@ -1,0 +1,112 @@
+#include <cstdlib>
+#include <cstring>
+#include <vector>
+#include <fstream>
+#include <iostream>
+namespace Koala
+{
+
+parBlock3D::parBlock3D()
+{
+  type = new int[12](); // Suggest: Type use char instead of int
+  n    = new int[3]();
+}
+
+const int faceLineId[6][4] =
+  {
+    {0, 3,  2,  1} ,
+    {8, 9, 10, 11} ,
+    {1, 6,  9,  5} ,
+    {3, 4, 11,  7} ,
+    {0, 5,  8,  4} ,
+    {2, 7, 10,  6}
+  };
+  
+toyMesh2D::toyMesh2D
+(
+  const parRun& Run_         ,
+  const char* inputFileName_ ,
+  const char* filesPath_
+)
+:
+  baseToyMesh(Run_, inputFileName_, filesPath_)
+{
+  // Open file for read
+  std::ifstream file;
+  Run.openFile(file, inputFileName, NULL, filesPath);
+
+  // Read Points
+  file >> sizePointsOfBlocks;
+  pointsOfBlocks = new double[sizePointsOfBlocks][3];
+  for (int i = 0; i < sizePointsOfBlocks; i++)
+    for (int j = 0; j < 3; j++)
+      file >> pointsOfBlocks[i][j];
+
+  // Read blocks
+  file >> sizeBlocks;
+  int blocks[8*sizeBlocks];
+  for (int i = 0; i < 8*sizeBlocks; i++)
+    file >> blocks[i];
+
+  parBlocks = new parBlock2D[sizeBlocks];
+  for (int i = 0; i < sizeBlocks; i++)
+  {
+    for (int j = 0; j < 3; j++)
+      file >> parBlocks[i].n[j];
+
+    for (int j = 0; j < 12; j++)
+      file >> parBlocks[i].type[j];
+  }
+
+  // Read parameters of lines
+  parLinesIndex    = new int[12*sizeBlocks + 1];
+  parLinesIndex[0] = 0;
+  for (int i = 1; i < 12*sizeBlocks + 1; i++)
+  {
+    file >> parLinesIndex[i];
+    parLinesIndex[i] += parLinesIndex[i - 1];
+  }
+
+  parLines = new double [parLinesIndex[12*sizeBlocks]];
+  for (int i = 0; i < parLinesIndex[12*sizeBlocks]; i++)
+    file >> parLines[i];
+
+  // Boundary
+  file >> sizePatches;
+  boundaryFacesIndex    = new int[sizePatches + 1];
+  boundaryFacesIndex[0] = 0;
+  for (int i = 1; i < sizePatches + 1; i++)
+  {
+    file >> boundaryFacesIndex[i];
+    boundaryFacesIndex[i] += boundaryFacesIndex[i - 1];
+  }
+  
+  boundaryFaces = new int[2*boundaryFacesIndex[sizePatches]][2];
+  for (int i = 0; i < sizePatches; i++)
+  {
+    std::string patchName;
+    file >> patchName;
+    patchesName += patchName;
+    patchesName.append("\n");
+
+    for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+    {
+      file >> boundaryFaces[j][0];
+      file >> boundaryFaces[j][1];
+    }
+  }
+  
+  // Lines and faces
+  lines = new int[12*sizeBlocks][3];
+  faces = new int[6*sizeBlocks][6];
+  
+  sizePoints = sizePointsOfBlocks;
+  sizeCells  = 0;
+  sizeLines  = 0;
+  sizeFaces  = 0;
+  for (int blockId = 0; blockId < sizeBlocks; blockId++)
+  {
+  }
+
+}
+}
