@@ -16,14 +16,14 @@ const int LINE_POINT_FIRST _ID = 0;
 const int LINE_POINT_END_ID    = 1;
   
 const int faceLineId[6][4] =
-  {
-    {0, 3,  2,  1} ,
-    {8, 9, 10, 11} ,
-    {1, 6,  9,  5} ,
-    {3, 4, 11,  7} ,
-    {0, 5,  8,  4} ,
-    {2, 7, 10,  6}
-  };
+{
+  {0, 3,  2,  1} ,
+  {8, 9, 10, 11} ,
+  {1, 6,  9,  5} ,
+  {3, 4, 11,  7} ,
+  {0, 5,  8,  4} ,
+  {2, 7, 10,  6}
+};
   
 toyMesh2D::toyMesh2D
 (
@@ -154,6 +154,16 @@ toyMesh2D::toyMesh2D
           sizeLines--;
           break;
         }
+    }
+    
+    listFaces3D blockFaces = &faces[6*blockId];
+    for (int faceIdInBlock = 0; faceIdInBlock < 6; faceIdInBlock++)
+    {
+      for (int lineIdInFace = 0; lineIdInFace < 4; lineIdInFace++)
+        blockFaces[faceIdInBlock][lineIdInFace] = abs(blockLines[faceLineId][lineIdInFace]][2]) - 1;
+      
+      blockFaces[faceIdInBlock][4] = ++sizeFaces;
+      blockFaces[faceIdInBlock][5] = -1;
     }
   }
 
