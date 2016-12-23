@@ -1,6 +1,28 @@
 #!/usr/bin/python
 import os
 
+'''
+ Polynomial equation: x^n -k*n + (k - 1) = 0
+ Find real root x0 using Newton iteration method
+ Beautiful algorithm
+'''
+def solveRatioEquation(n, k):
+  if k == n or n == 1:
+    return 1
+  
+  x = (k/(n + 0.0))**(1/(n - 1.0))
+  if k > n:
+    x += 1
+  else
+    x -= 1
+    
+  while 1:
+    xOld = x
+    x    = ((n - 1)*x**n + (1 - k))/(n*x**(n - 1) - k)
+    
+    if abs(xOld - x) < 1e-5:
+      return x
+
 class pyMesh2D:
   def __init__(self, fileName = "mesh/toyMesh2D"):
     self.points     = []
