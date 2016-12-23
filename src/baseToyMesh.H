@@ -31,23 +31,23 @@ protected:
         // Blocks parameters
         int sizePointsOfBlocks;
         int sizeBlocks;
-        
+
         double* parLines;
         int* parLinesIndex;
-        
+
         // Mesh parameters
         int sizePoints;
         int sizeCells;
         int sizeLines;
         int sizeInnerFaces;
-        
+
         int* pointsOnLinesIndex;
         int* pointsInBlocksIndex;
         int* cellsIndex;
-        
+
         int sizePatches;
         std::string patchesName;
- 
+
         listBoundaryFaces boundaryFaces;
         int* boundaryFacesIndex;
 
@@ -57,27 +57,27 @@ public:
         baseToyMesh
         (
           const parRun& Run_         ,
-          const char* inputFileName_ ,  
+          const char* inputFileName_ ,
           const char* filesPath_ = "mesh"
-        );  
-      
+        );
+
     // Write
 
-        virtual void writePoints() const = 0;  
-        virtual void writeCells()  const = 0; 
-        virtual void writeFaces()  const = 0;  
+        virtual void writePoints() const = 0;
+        virtual void writeCells()  const = 0;
+        virtual void writeFaces()  const = 0;
 
         virtual void writeBoundaryName()     const;
         virtual void writeBoundaryPointsId() const = 0;
-        virtual void writeBoundaryFacesId()  const = 0;
+        virtual void writeBoundaryFaces()  const = 0;
 
 protected:
     // Functions used to create points
     // size: Number of points inside line
-        
+
         /*
           Points distribution on [0, 1] interval
-          Type:  
+          Type:
                 0: Equal ratio distribution
                 1: Central equal ratio distribution
         */
@@ -85,7 +85,7 @@ protected:
         (
           double* map         ,
           const int& size     ,
-          const double& ratio ,  
+          const double& ratio ,
           const int& type = 0
         ) const;
 
@@ -94,7 +94,7 @@ protected:
           const double* startPoint ,
           const double* endPoint   ,
           double* points           ,
-          const int& size          ,    
+          const int& size          ,
           const int& dim           ,
           const double& ratio = 0  ,
           const int& type = 0
@@ -105,7 +105,7 @@ protected:
           const double* startPoint ,
           const double* endPoint   ,
           double* points           ,
-          const int& size          ,    
+          const int& size          ,
           const double& angle      ,
           const double& ratio = 0  ,
           const int& type = 0
