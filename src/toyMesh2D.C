@@ -80,24 +80,24 @@ toyMesh2D::toyMesh2D
   file >> sizePatches;
   boundaryFacesIndex    = new int[sizePatches + 1];
   boundaryFacesIndex[0] = 0;
-  for (int i = 1; i < sizePatches + 1; i++)
+  for (int patchId = 1; patchId < sizePatches + 1; patchId++)
   {
-    file >> boundaryFacesIndex[i];
-    boundaryFacesIndex[i] += boundaryFacesIndex[i - 1];
+    file >> boundaryFacesIndex[patchId];
+    boundaryFacesIndex[patchId] += boundaryFacesIndex[patchId - 1];
   }
 
-  boundaryFaces = new int[2*boundaryFacesIndex[sizePatches]][2];
-  for (int i = 0; i < sizePatches; i++)
+  boundaryFaces = new int[boundaryFacesIndex[sizePatches]][2];
+  for (int patchId = 0; patchId < sizePatches; patchId++)
   {
     std::string patchName;
     file >> patchName;
     patchesName += patchName;
     patchesName.append("\n");
 
-    for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
+    for (int faceIdInPatch = boundaryFacesIndex[patchId]; faceIdInPatch < boundaryFacesIndex[patchId + 1]; faceIdInPatch++)
     {
-      file >> boundaryFaces[j][0];
-      file >> boundaryFaces[j][1];
+      file >> boundaryFaces[faceIdInPatch][0];
+      file >> boundaryFaces[faceIdInPatch][1];
     }
   }
 
@@ -609,7 +609,7 @@ void toyMesh2D::writePoints() const
       commonPointsId[innerBlockPointsId[lines[i][1]]].push_back(linePointsId[numPoints][2]);
     }
   }
-  
+
   for (int i = 0; i < sizeInnerBlockPoints; i++)
   {
     // Reorder
@@ -830,6 +830,7 @@ void toyMesh2D::writePoints() const
               coordinates[offsetY + dim*(nY + 1)][offsetX] + residual[offsetY + dim*(nY + 1)][offsetX];
 
       // Smooth points on block lines that is not belong to boundary
+      /*
       for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
       {
         int lineId = blockLines[lineIdInBlock][2] - 1;
@@ -863,7 +864,7 @@ void toyMesh2D::writePoints() const
 
           error += residualX*residualX + residualY*residualY;
         }
-      }
+      }*/
     }
     /*
     // Smooth end points of lines and the points is not belong to boundary
@@ -933,14 +934,14 @@ void toyMesh2D::writeCells() const
     int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
 
     // Corner points
-    idPointsOfBlock[0][0]                                             = lines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
-    idPointsOfBlock[0][parBlocks[blockId].n[0]]                       = lines[LINE_BOTTOM][LINE_POINT_END_ID];
-    idPointsOfBlock[parBlocks[blockId].n[1]][parBlocks[blockId].n[0]] = lines[LINE_TOP][LINE_POINT_FIRST_ID];
-    idPointsOfBlock[parBlocks[blockId].n[1]][0]                       = lines[LINE_TOP][LINE_POINT_END_ID];
+    idPointsOfBlock[0][0]                                             = blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
+    idPointsOfBlock[0][parBlocks[blockId].n[0]]                       = blockLines[LINE_BOTTOM][LINE_POINT_END_ID];
+    idPointsOfBlock[parBlocks[blockId].n[1]][parBlocks[blockId].n[0]] = blockLines[LINE_TOP][LINE_POINT_FIRST_ID];
+    idPointsOfBlock[parBlocks[blockId].n[1]][0]                       = blockLines[LINE_TOP][LINE_POINT_END_ID];
 
     // Lines points
     // Bottom
-    int lineId = abs(lines[LINE_BOTTOM][2]) - 1;
+    int lineId = abs(blockLines[LINE_BOTTOM][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (lines[LINE_BOTTOM][2] < 0)
         idPointsOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] =
@@ -949,7 +950,7 @@ void toyMesh2D::writeCells() const
         idPointsOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] = i;
 
     // Right
-    lineId = abs(lines[LINE_RIGHT][2]) - 1;
+    lineId = abs(blockLines[LINE_RIGHT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (lines[LINE_RIGHT][2] < 0)
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] =
@@ -958,7 +959,7 @@ void toyMesh2D::writeCells() const
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] = i;
 
     // Top
-    lineId = abs(lines[LINE_TOP][2]) - 1;
+    lineId = abs(blockLines[LINE_TOP][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (lines[LINE_TOP][2] > 0)
         idPointsOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] =
@@ -967,7 +968,7 @@ void toyMesh2D::writeCells() const
         idPointsOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] = i;
 
     // Left
-    lineId = abs(lines[LINE_LEFT][2]) - 1;
+    lineId = abs(blockLines[LINE_LEFT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (lines[LINE_LEFT][2] > 0)
         idPointsOfBlock[i - pointsOnLinesIndex[lineId] + 1][0] =
@@ -998,13 +999,13 @@ void toyMesh2D::writeFaces() const
   std::ofstream file;
   std::ofstream fileO;
   std::ofstream fileN;
-  
+
   Run.openFile(file  , "face"     , NULL, filesPath);
   Run.openFile(fileO , "owner"    , NULL, filesPath);
   Run.openFile(fileN , "neighbour", NULL, filesPath);
-  
+
   file << sizeInnerFaces << "\n";
-  
+
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
     listLines2D blockLines = &lines[4*blockId];
@@ -1067,7 +1068,7 @@ void toyMesh2D::writeFaces() const
         fileO << cellsIndex[blockId] + (offsetX - 1) + parBlocks[blockId].n[0]*offsetY << "\n";
         fileN << cellsIndex[blockId] + offsetX       + parBlocks[blockId].n[0]*offsetY << "\n";
       }
-    
+
     for (int offsetY = 1; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 0; offsetX < parBlocks[blockId].n[0]; offsetX++)
       {
@@ -1076,66 +1077,66 @@ void toyMesh2D::writeFaces() const
         fileN << cellsIndex[blockId] + offsetX + parBlocks[blockId].n[0]*offsetY << "\n";
       }
   }
-  
+
   // Write faces on block boundary
   for (int globalId = 0; globalId < 4*sizeBlocks; globalId++)
     if (lines[globalId][2] < 0)
     {
       int lineId = 1 - lines[globalId][2];
-      
+
       int blockId        = globalId/4;
       int numLineInBlock = globalId%4;
-       
+
       const int& neighbourBlockId        = lines[globalId][4];
       const int& numLineInNeighbourBlock = lines[globalId][3];
-      
+
       int startId = pointsOnLinesIndex[lineId + 1] - 1;
       int endId   = pointsOnLinesIndex[lineId];
-      
+
       int ownerBuffer, neighbourBuffer;
       switch (numLineInBlock)
       {
         case LINE_BOTTOM:
           ownerBuffer = cellsIndex[blockId];
           break;
-          
+
         case LINE_RIGHT:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0] - 1;
           break;
-        
+
         case LINE_TOP:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*parBlocks[blockId].n[1] - 1;
           break;
-          
+
         case LINE_LEFT:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*(parBlocks[blockId].n[1] - 1);
           break;
-          
+
       }
-      
+
       switch (numLineInNeighbourBlock)
       {
         case LINE_BOTTOM:
           neighbourBuffer = cellsIndex[neighbourBlockId] + parBlocks[neighbourBlockId].n[0] - 1;
           break;
-          
+
         case LINE_RIGHT:
           neighbourBuffer = cellsIndex[neighbourBlockId] + parBlocks[neighbourBlockId].n[0]*parBlocks[neighbourBlockId].n[1] - 1;
           break;
-        
+
         case LINE_TOP:
           neighbourBuffer = cellsIndex[neighbourBlockId] + parBlocks[neighbourBlockId].n[0]*(parBlocks[neighbourBlockId].n[1] - 1);
           break;
-          
+
         case LINE_LEFT:
           neighbourBuffer = cellsIndex[neighbourBlockId];
           break;
-          
+
       }
-      
+
       fileO << ownerBuffer << "\n";
       fileN << neighbourBuffer << "\n";
-      
+
       if (startId < endId)
         file << lines[globalId][LINE_POINT_FIRST_ID] << " " << lines[globalId][LINE_POINT_END_ID] << "\n";
       else
@@ -1144,48 +1145,48 @@ void toyMesh2D::writeFaces() const
         while (startId >= endId)
         {
           switch (numLineInBlock)
-          { 
+          {
             case LINE_BOTTOM:
               ownerBuffer += 1;
               break;
-              
+
             case LINE_RIGHT:
               ownerBuffer += parBlocks[blockId].n[0];
               break;
-              
+
             case LINE_TOP:
               ownerBuffer -= 1;
               break;
-              
+
             case LINE_LEFT:
               ownerBuffer -= parBlocks[blockId].n[0];
               break;
           }
           fileO << ownerBuffer << "\n";
-          
+
           switch (numLineInNeighbourBlock)
-          { 
+          {
             case LINE_BOTTOM:
               neighbourBuffer -= 1;
               break;
-              
+
             case LINE_RIGHT:
               neighbourBuffer -= parBlocks[blockId].n[0];
               break;
-              
+
             case LINE_TOP:
               neighbourBuffer += 1;
               break;
-              
+
             case LINE_LEFT:
               neighbourBuffer += parBlocks[blockId].n[0];
               break;
           }
           fileN << neighbourBuffer << "\n";
-          
+
           if (startId == endId)
             break;
-          
+
           file << startId << " ";
           --startId;
           file << startId << "\n";
@@ -1199,23 +1200,23 @@ void toyMesh2D::writeBoundaryPointsId() const
 {
   std::ofstream file;
   Run.openFile(file, "boundaryPoints", NULL, filesPath);
-  
+
   bool isWrite[sizePointsOfBlocks];
   memset(isWrite, true, sizePointsOfBlocks*sizeof(bool));
-  
+
   // Calculate number of points for per patch
   int sizeBoundaryPoints = 0;
   for (int i = 0; i < sizePatches; i++)
-  { 
+  {
     for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
     {
       const int& blockId       = boundaryFaces[j][0];
       const int& lineIdInBlock = boundaryFaces[j][1];
-      
+
       listLines2D blockLines = &lines[4*blockId];
       int lineId = blockLines[lineIdInBlock][2] - 1;
       sizeBoundaryPoints += pointsOnLinesIndex[lineId + 1] - pointsOnLinesIndex[lineId];
-      
+
       for (int k = 0; k < 2; k++)
       {
         const int& pointId = blockLines[lineIdInBlock][k];
@@ -1228,14 +1229,14 @@ void toyMesh2D::writeBoundaryPointsId() const
     }
     file << sizeBoundaryPoints << " ";
   }
-  
+
   memset(isWrite, true, sizePointsOfBlocks*sizeof(bool));
   for (int i = 0; i < sizePatches; i++)
     for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
     {
       const int& blockId       = boundaryFaces[j][0];
       const int& lineIdInBlock = boundaryFaces[j][1];
-      
+
       listLines2D blockLines = &lines[4*blockId];
       for (int k = 0; k < 2; k++)
       {
@@ -1246,11 +1247,11 @@ void toyMesh2D::writeBoundaryPointsId() const
           isWrite[pointId] =false;
         }
       }
-      
+
       //
       int lineId = blockLines[lineIdInBlock][2] - 1;
       for (int k = pointsOnLinesIndex[lineId]; k < pointsOnLinesIndex[lineId + 1]; k++)
-        file << k << " ";   
+        file << k << " ";
     }
 }
 
@@ -1258,10 +1259,10 @@ void toyMesh2D::writeBoundaryFaces() const
 {
   std::ofstream file;
   std::ofstream fileO;
-  
+
   Run.openFile(file , "boundaryFaces", NULL, filesPath);
   Run.openFile(fileO, "boundaryCells", NULL, filesPath);
-  
+
   int sizeBoundaryFaces = 0;
   for (int i = 0; i < sizePatches; i++)
   {
@@ -1272,43 +1273,43 @@ void toyMesh2D::writeBoundaryFaces() const
     }
     file << sizeBoundaryFaces << " ";
   }
-  
+
   for (int i = 0; i < sizePatches; i++)
     for (int j = boundaryFacesIndex[i]; j < boundaryFacesIndex[i + 1]; j++)
     {
       const int& blockId        = boundaryFaces[j][0];
-      const int& numLineInBlock = boundaryFaces[j][1];    
-      
+      const int& numLineInBlock = boundaryFaces[j][1];
+
       int globalId = 4*blockId + numLineInBlock;
-      
+
       const int& linePoint1Id   = lines[globalId][0];
       const int& linePoint2Id   = lines[globalId][1];
-     
+
       int lineId  = lines[globalId][2] - 1;
       int startId = pointsOnLinesIndex[lineId];
       int endId   = pointsOnLinesIndex[lineId + 1] - 1;
-      
+
       int ownerBuffer;
       switch (numLineInBlock)
       {
         case LINE_BOTTOM:
           ownerBuffer = cellsIndex[blockId];
           break;
-          
+
         case LINE_RIGHT:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0] - 1;
           break;
-        
+
         case LINE_TOP:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*parBlocks[blockId].n[1] - 1;
           break;
-          
+
         case LINE_LEFT:
           ownerBuffer = cellsIndex[blockId] + parBlocks[blockId].n[0]*(parBlocks[blockId].n[1] - 1);
           break;
       }
       fileO << ownerBuffer << "\n";
-      
+
       if (startId > endId)
         file << linePoint1Id << " " << linePoint2Id << " ";
       else
@@ -1317,28 +1318,28 @@ void toyMesh2D::writeBoundaryFaces() const
         while (startId <= endId)
         {
           switch (numLineInBlock)
-          { 
+          {
             case LINE_BOTTOM:
               ownerBuffer += 1;
               break;
-              
+
             case LINE_RIGHT:
               ownerBuffer += parBlocks[blockId].n[0];
               break;
-              
+
             case LINE_TOP:
               ownerBuffer -= 1;
               break;
-              
+
             case LINE_LEFT:
               ownerBuffer -= parBlocks[blockId].n[0];
               break;
           }
           fileO << ownerBuffer << "\n";
-          
+
           if (startId == endId)
             break;
-          
+
           file << startId << " ";
           startId++;
           file << startId << "\n";
