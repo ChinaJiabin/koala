@@ -462,7 +462,7 @@ void toyMesh2D::writePoints() const
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId] + (offset - 1);
               break;
 
-            case LINE_LEFT:
+            case LINE_RIGHT:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId] + (offset*(parBlocks[blockId].n[0] - 1) - 1);
               break;
@@ -472,7 +472,7 @@ void toyMesh2D::writePoints() const
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId + 1] - offset;
               break;
 
-            case LINE_RIGHT:
+            case LINE_LEFT:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][1] = pointsInBlocksIndex[blockId + 1] - offset*(parBlocks[blockId].n[0] - 1);
               break;
@@ -526,7 +526,7 @@ void toyMesh2D::writePoints() const
                 linePointsId[offset][2] = pointsInBlocksIndex[blockId] + (numPoints - offset);
               break;
 
-            case LINE_LEFT:
+            case LINE_RIGHT:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][2] = pointsInBlocksIndex[blockId + 1] - ((offset - 1)*(parBlocks[blockId].n[0] - 1) + 1);
               break;
@@ -536,7 +536,7 @@ void toyMesh2D::writePoints() const
                 linePointsId[offset][2] = pointsInBlocksIndex[blockId + 1] - (numPoints - offset + 1);
               break;
 
-            case LINE_RIGHT:
+            case LINE_LEFT:
               for (int offset = 1; offset <= numPoints; offset++)
                 linePointsId[offset][2] = pointsInBlocksIndex[blockId] + (offset - 1)*(parBlocks[blockId].n[0] - 1);
               break;
