@@ -523,22 +523,22 @@ void toyMesh2D::writePoints() const
           {
             case LINE_BOTTOM:
               for (int offset = 1; offset <= numPoints; offset++)
-                linePointsId[offset][2] = pointsInBlocksIndex[blockId] + (numPoints - offset);
+                linePointsId[offset][2] = pointsInBlocksIndex[neighbourBlockId] + (numPoints - offset);
               break;
 
             case LINE_RIGHT:
               for (int offset = 1; offset <= numPoints; offset++)
-                linePointsId[offset][2] = pointsInBlocksIndex[blockId + 1] - ((offset - 1)*(parBlocks[blockId].n[0] - 1) + 1);
+                linePointsId[offset][2] = pointsInBlocksIndex[neighbourBlockId + 1] - ((offset - 1)*(parBlocks[neighbourBlockId].n[0] - 1) + 1);
               break;
 
             case LINE_TOP:
               for (int offset = 1; offset <= numPoints; offset++)
-                linePointsId[offset][2] = pointsInBlocksIndex[blockId + 1] - (numPoints - offset + 1);
+                linePointsId[offset][2] = pointsInBlocksIndex[neighbourBlockId + 1] - (numPoints - offset + 1);
               break;
 
             case LINE_LEFT:
               for (int offset = 1; offset <= numPoints; offset++)
-                linePointsId[offset][2] = pointsInBlocksIndex[blockId] + (offset - 1)*(parBlocks[blockId].n[0] - 1);
+                linePointsId[offset][2] = pointsInBlocksIndex[neighbourBlockId] + (offset - 1)*(parBlocks[neighbourBlockId].n[0] - 1);
               break;
           }
         }
