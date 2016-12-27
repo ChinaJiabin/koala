@@ -501,7 +501,6 @@ void toyMesh2D::writePoints() const
         const int& neighbourBlockId       = lines[globalId][4];
         int numLine                       = 4*neighbourBlockId + lineIdInNeighbourBlock;
 
-
         int idBefore     = numLine + (lineIdInNeighbourBlock == 0 ? 3 : -1);
         int lineIdBefore = abs(lines[idBefore][2]) - 1;
 
@@ -520,7 +519,7 @@ void toyMesh2D::writePoints() const
           else
             linePointsId[0][2] = pointsOnLinesIndex[lineIdAfter + 1] - 1;
 
-          switch (lineIdInBlock)
+          switch (lineIdInNeighbourBlock)
           {
             case LINE_BOTTOM:
               for (int offset = 1; offset <= numPoints; offset++)
