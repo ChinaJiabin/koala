@@ -829,7 +829,6 @@ void toyMesh2D::writePoints() const
               coordinates[offsetY + dim*(nY + 1)][offsetX] + residual[offsetY + dim*(nY + 1)][offsetX];
 
       // Smooth points on block lines that is not belong to boundary
-      /*
       for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
       {
         int lineId = blockLines[lineIdInBlock][2] - 1;
@@ -863,7 +862,7 @@ void toyMesh2D::writePoints() const
 
           error += residualX*residualX + residualY*residualY;
         }
-      }*/
+      }
     }
     /*
     // Smooth end points of lines and the points is not belong to boundary
