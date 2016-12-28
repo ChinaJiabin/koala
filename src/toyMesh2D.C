@@ -190,52 +190,55 @@ void toyMesh2D::getPointsIdOfBlock
   listLines2D blockLines = &lines[4*blockId];
   
   // Corner points
-  pointsIdOfBlock[0][0]                                             = blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
-  pointsIdOfBlock[0][parBlocks[blockId].n[0]]                       = blockLines[LINE_BOTTOM][LINE_POINT_END_ID];
-  pointsIdOfBlock[parBlocks[blockId].n[1]][parBlocks[blockId].n[0]] = blockLines[LINE_TOP][LINE_POINT_FIRST_ID];
-  pointsIdOfBlock[parBlocks[blockId].n[1]][0]                       = blockLines[LINE_TOP][LINE_POINT_END_ID];
+  pointsIdOfBlock[0]                       = blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
+  pointsIdOfBlock[parBlocks[blockId].n[0]] = blockLines[LINE_BOTTOM][LINE_POINT_END_ID];
+  
+  pointsIdOfBlock[parBlocks[blockId].n[0] + parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)] 
+  = blockLines[LINE_TOP][LINE_POINT_FIRST_ID];
+  pointsIdOfBlock[parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)]                       
+  = blockLines[LINE_TOP][LINE_POINT_END_ID];
 
   // Lines points
     // Bottom
     int lineId = abs(blockLines[LINE_BOTTOM][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (blockLines[LINE_BOTTOM][2] < 0)
-        pointsIdOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] =
+        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1] =
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
-        pointsIdOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] = i;
+        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1] = i;
 
     // Right
     lineId = abs(blockLines[LINE_RIGHT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (blockLines[LINE_RIGHT][2] < 0)
-        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] =
+        pointsIdOfBlock[parBlocks[blockId].n[0] + (i - pointsOnLinesIndex[lineId] + 1)*(parBlocks[blockId].n[0] + 1)] =
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
-        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] = i;
+        pointsIdOfBlock[parBlocks[blockId].n[0] + (i - pointsOnLinesIndex[lineId] + 1)*(parBlocks[blockId].n[0] + 1)] = i;
 
     // Top
     lineId = abs(blockLines[LINE_TOP][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (blockLines[LINE_TOP][2] > 0)
-        pointsIdOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] =
+        pointsIdOfBlock[(i - pointsOnLinesIndex[lineId] + 1) + parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)] =
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
-        pointsIdOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] = i;
+        pointsIdOfBlock[(i - pointsOnLinesIndex[lineId] + 1) + parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)] = i;
 
     // Left
     lineId = abs(blockLines[LINE_LEFT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (blockLines[LINE_LEFT][2] > 0)
-        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][0] =
+        pointsIdOfBlock[(i - pointsOnLinesIndex[lineId] + 1)*(parBlocks[blockId].n[0] + 1)] =
           (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
-        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][0] = i;
+        pointsIdOfBlock[(i - pointsOnLinesIndex[lineId] + 1)*(parBlocks[blockId].n[0] + 1)] = i;
 
     // Internal points
     for (int offsetY = 1; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
-        pointsIdOfBlock[offsetY][offsetX] =
+        pointsIdOfBlock[offsetX + offsetY*(parBlocks[blockId].n[0] + 1)] =
           pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
 }
   
@@ -986,9 +989,11 @@ void toyMesh2D::writeCells() const
 
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
+    int pointsIdOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
+    getPointsIdOfBlock(blockId, &pointsIdOfBlock[0][0]);
+    /*
     listLines2D blockLines = &lines[4*blockId];
-    int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
-
+    
     // Corner points
     idPointsOfBlock[0][0]                                             = blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
     idPointsOfBlock[0][parBlocks[blockId].n[0]]                       = blockLines[LINE_BOTTOM][LINE_POINT_END_ID];
@@ -1037,15 +1042,15 @@ void toyMesh2D::writeCells() const
       for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
         idPointsOfBlock[offsetY][offsetX] =
           pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
-
+    */
     // Write cells
     for (int offsetY = 0; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 0; offsetX < parBlocks[blockId].n[0]; offsetX++)
       {
-        file << idPointsOfBlock[offsetY][offsetX]         << " ";
-        file << idPointsOfBlock[offsetY][offsetX + 1]     << " ";
-        file << idPointsOfBlock[offsetY + 1][offsetX + 1] << " ";
-        file << idPointsOfBlock[offsetY + 1][offsetX]     << "\n";
+        file << pointsIdOfBlock[offsetY][offsetX]         << " ";
+        file << pointsIdOfBlock[offsetY][offsetX + 1]     << " ";
+        file << pointsIdOfBlock[offsetY + 1][offsetX + 1] << " ";
+        file << pointsIdOfBlock[offsetY + 1][offsetX]     << "\n";
       }
   }
 }
