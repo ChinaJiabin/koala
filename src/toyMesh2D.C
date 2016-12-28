@@ -195,6 +195,48 @@ void toyMesh2D::getPointsIdOfBlock
   pointsIdOfBlock[parBlocks[blockId].n[1]][parBlocks[blockId].n[0]] = blockLines[LINE_TOP][LINE_POINT_FIRST_ID];
   pointsIdOfBlock[parBlocks[blockId].n[1]][0]                       = blockLines[LINE_TOP][LINE_POINT_END_ID];
 
+  // Lines points
+    // Bottom
+    int lineId = abs(blockLines[LINE_BOTTOM][2]) - 1;
+    for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
+      if (blockLines[LINE_BOTTOM][2] < 0)
+        pointsIdOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] =
+          (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
+      else
+        pointsIdOfBlock[0][i - pointsOnLinesIndex[lineId] + 1] = i;
+
+    // Right
+    lineId = abs(blockLines[LINE_RIGHT][2]) - 1;
+    for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
+      if (blockLines[LINE_RIGHT][2] < 0)
+        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] =
+          (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
+      else
+        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][parBlocks[blockId].n[0]] = i;
+
+    // Top
+    lineId = abs(blockLines[LINE_TOP][2]) - 1;
+    for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
+      if (blockLines[LINE_TOP][2] > 0)
+        pointsIdOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] =
+          (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
+      else
+        pointsIdOfBlock[parBlocks[blockId].n[1]][i - pointsOnLinesIndex[lineId] + 1] = i;
+
+    // Left
+    lineId = abs(blockLines[LINE_LEFT][2]) - 1;
+    for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
+      if (blockLines[LINE_LEFT][2] > 0)
+        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][0] =
+          (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
+      else
+        pointsIdOfBlock[i - pointsOnLinesIndex[lineId] + 1][0] = i;
+
+    // Internal points
+    for (int offsetY = 1; offsetY < parBlocks[blockId].n[1]; offsetY++)
+      for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
+        pointsIdOfBlock[offsetY][offsetX] =
+          pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
 }
   
 void toyMesh2D::smoothPoint
