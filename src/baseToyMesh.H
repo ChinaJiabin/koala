@@ -51,6 +51,8 @@ protected:
         listBoundaryFaces boundaryFaces;
         int* boundaryFacesIndex;
 
+        virtual void getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) const = 0;
+
 public:
     // Constructor
 

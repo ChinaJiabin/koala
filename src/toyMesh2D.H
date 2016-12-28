@@ -15,11 +15,11 @@ public:
         parBlock2D();
 
     // inline
- 
+
         inline int SizePoints()      const{ return (n[0] + 1)*(n[1] + 1); }
 
         inline int SizeCells()       const{ return n[0]*n[1]; }
-        
+
         inline int SizeInnerPoints() const{ return (n[0] - 1)*(n[1] - 1); }
 
         inline int SizeInnerFaces()  const{ return n[0]*(n[1] - 1) + n[1]*(n[0] - 1); }
@@ -29,7 +29,7 @@ typedef double (*listPoints2D)[2];
 typedef int (*listLines2D)[5];
 
 class toyMesh2D
-: 
+:
   public baseToyMesh
 {
 private:
@@ -37,20 +37,16 @@ private:
         parBlock2D* parBlocks;
         listPoints2D pointsOfBlocks;
         listLines2D lines;
-        
-        void getPointsIdOfBlock
-        ( 
-          const int& blockId , 
-          int* pointsIdOfBlock
-        ) const;
-        
-        /* 
+
+        virtual void getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) const;
+
+        /*
           Gauss-Seidel smooth method
           Format from elliptic equation
         */
         void smoothPoint
         (
-          double& point_x , 
+          double& point_x ,
           double& point_y ,
           const double& point_x_right     , const double& point_y_right     ,
           const double& point_x_up        , const double& point_y_up        ,
@@ -61,7 +57,7 @@ private:
           const double& point_x_left_down , const double& point_y_left_down ,
           const double& point_x_down_right, const double& point_y_down_right
         ) const;
-        
+
         // Smooth all points in the block
         double smoothBlockPoints
         (
@@ -71,7 +67,7 @@ private:
           double* residual    ,
           const int& numGap = 1
         ) const;
-        
+
         // Restriction operator
         double restriction
         (
@@ -101,9 +97,9 @@ public:
 
     // Write
 
-        virtual void writePoints() const; 
-        virtual void writeCells()  const; 
-        virtual void writeFaces()  const;  
+        virtual void writePoints() const;
+        virtual void writeCells()  const;
+        virtual void writeFaces()  const;
 
         virtual void writeBoundaryPointsId() const;
         virtual void writeBoundaryFaces()  const;

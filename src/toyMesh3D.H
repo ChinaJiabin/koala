@@ -15,11 +15,11 @@ public:
         parBlock3D();
 
     // inline
- 
+
         inline int SizePoints()      const{ return (n[0] + 1)*(n[1] + 1)*(n[2] + 1); }
 
         inline int SizeCells()       const{ return n[0]*n[1]*n[2]; }
-        
+
         inline int SizeInnerPoints() const{ return (n[0] - 1)*(n[1] - 1)*(n[2] - 1); }
 
         inline int SizeInnerFaces()  const{ return n[0]*n[1]*(n[2] - 1) + n[0]*(n[1] - 1)*n[2] + (n[0] - 1)*n[1]*n[2]; }
@@ -30,20 +30,22 @@ typedef int (*listLines3D)[3]
 typedef int (*listFaces3D)[6];
 
 class toyMesh3D
-: 
+:
   public baseToyMesh
 {
 private:
         // Blocks parameters
         parBlock3D* parBlocks;
         listPoints3D pointsOfBlocks;
-        
+
         listLines3D lines;
 
         int sizeFaces;
         listFaces3D faces;
         int* pointsOnFacesIndex;
-         
+
+        virtual void getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) const;
+
 public:
     // Constructor
 
@@ -56,9 +58,9 @@ public:
 
     // Write
 
-        virtual void writePoints() const; 
-        virtual void writeCells()  const; 
-        virtual void writeFaces()  const;  
+        virtual void writePoints() const;
+        virtual void writeCells()  const;
+        virtual void writeFaces()  const;
 
         virtual void writeBoundaryPointsId() const;
         virtual void writeBoundaryFaces()  const;

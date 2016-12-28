@@ -180,22 +180,18 @@ toyMesh2D::toyMesh2D
   }
   pointsInBlocksIndex[sizeBlocks] = trackingId;
 }
-  
-void toyMesh2D::getPointsIdOfBlock
-( 
-  const int& blockId , 
-  int* pointsIdOfBlock
-) const
+
+void toyMesh2D::getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) const
 {
   listLines2D blockLines = &lines[4*blockId];
-  
+
   // Corner points
   pointsIdOfBlock[0]                       = blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
   pointsIdOfBlock[parBlocks[blockId].n[0]] = blockLines[LINE_BOTTOM][LINE_POINT_END_ID];
-  
-  pointsIdOfBlock[parBlocks[blockId].n[0] + parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)] 
+
+  pointsIdOfBlock[parBlocks[blockId].n[0] + parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)]
   = blockLines[LINE_TOP][LINE_POINT_FIRST_ID];
-  pointsIdOfBlock[parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)]                       
+  pointsIdOfBlock[parBlocks[blockId].n[1]*(parBlocks[blockId].n[0] + 1)]
   = blockLines[LINE_TOP][LINE_POINT_END_ID];
 
   // Lines points
@@ -241,7 +237,7 @@ void toyMesh2D::getPointsIdOfBlock
         pointsIdOfBlock[offsetX + offsetY*(parBlocks[blockId].n[0] + 1)] =
           pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
 }
-  
+
 void toyMesh2D::smoothPoint
 (
   double& point_x ,
@@ -1020,7 +1016,7 @@ void toyMesh2D::writeFaces() const
   {
     int pointsIdOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
     getPointsIdOfBlock(blockId, &pointsIdOfBlock[0][0]);
-    
+
     // Write faces in blocks
     for (int offsetY = 0; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
