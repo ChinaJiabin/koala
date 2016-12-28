@@ -180,7 +180,23 @@ toyMesh2D::toyMesh2D
   }
   pointsInBlocksIndex[sizeBlocks] = trackingId;
 }
+  
+void toyMesh2D::getPointsIdOfBlock
+( 
+  const int& blockId , 
+  int* pointsIdOfBlock
+) const
+{
+  listLines2D blockLines = &lines[4*blockId];
+  
+  // Corner points
+  pointsIdOfBlock[0][0]                                             = blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
+  pointsIdOfBlock[0][parBlocks[blockId].n[0]]                       = blockLines[LINE_BOTTOM][LINE_POINT_END_ID];
+  pointsIdOfBlock[parBlocks[blockId].n[1]][parBlocks[blockId].n[0]] = blockLines[LINE_TOP][LINE_POINT_FIRST_ID];
+  pointsIdOfBlock[parBlocks[blockId].n[1]][0]                       = blockLines[LINE_TOP][LINE_POINT_END_ID];
 
+}
+  
 void toyMesh2D::smoothPoint
 (
   double& point_x ,
