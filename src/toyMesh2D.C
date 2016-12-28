@@ -1069,6 +1069,9 @@ void toyMesh2D::writeFaces() const
 
   for (int blockId = 0; blockId < sizeBlocks; blockId++)
   {
+    int pointsIdOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
+    getPointsIdOfBlock(blockId, &pointsIdOfBlock[0][0]);
+    /*
     listLines2D blockLines = &lines[4*blockId];
     int idPointsOfBlock[parBlocks[blockId].n[1] + 1][parBlocks[blockId].n[0] + 1];
 
@@ -1120,12 +1123,13 @@ void toyMesh2D::writeFaces() const
       for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
         idPointsOfBlock[offsetY][offsetX] =
           pointsInBlocksIndex[blockId] + (offsetX - 1) + (parBlocks[blockId].n[0] - 1)*(offsetY - 1);
-
+    */
+    
     // Write faces in blocks
     for (int offsetY = 0; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 1; offsetX < parBlocks[blockId].n[0]; offsetX++)
       {
-        file << idPointsOfBlock[offsetY][offsetX] << " " << idPointsOfBlock[offsetY + 1][offsetX] << "\n";
+        file << pointsIdOfBlock[offsetY][offsetX] << " " << pointsIdOfBlock[offsetY + 1][offsetX] << "\n";
         fileO << cellsIndex[blockId] + (offsetX - 1) + parBlocks[blockId].n[0]*offsetY << "\n";
         fileN << cellsIndex[blockId] + offsetX       + parBlocks[blockId].n[0]*offsetY << "\n";
       }
@@ -1133,7 +1137,7 @@ void toyMesh2D::writeFaces() const
     for (int offsetY = 1; offsetY < parBlocks[blockId].n[1]; offsetY++)
       for (int offsetX = 0; offsetX < parBlocks[blockId].n[0]; offsetX++)
       {
-        file << idPointsOfBlock[offsetY][offsetX + 1] << " " << idPointsOfBlock[offsetY][offsetX] << "\n";
+        file << pointsIdOfBlock[offsetY][offsetX + 1] << " " << pointsIdOfBlock[offsetY][offsetX] << "\n";
         fileO << cellsIndex[blockId] + offsetX + parBlocks[blockId].n[0]*(offsetY - 1) << "\n";
         fileN << cellsIndex[blockId] + offsetX + parBlocks[blockId].n[0]*offsetY << "\n";
       }
