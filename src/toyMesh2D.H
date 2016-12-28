@@ -37,7 +37,13 @@ private:
         parBlock2D* parBlocks;
         listPoints2D pointsOfBlocks;
         listLines2D lines;
-
+        
+        void getPointsIdOfBlock
+        ( 
+          const int& blockId , 
+          int* pointsIdOfBlock
+        ) const;
+        
         /* 
           Gauss-Seidel smooth method
           Format from elliptic equation
