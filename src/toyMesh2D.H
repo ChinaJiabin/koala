@@ -46,7 +46,7 @@ private:
         */
         void smoothPoint
         (
-          double& point_x ,
+          double& point_x ,                 
           double& point_y ,
           const double& point_x_right     , const double& point_y_right     ,
           const double& point_x_up        , const double& point_y_up        ,
@@ -61,8 +61,7 @@ private:
         // Smooth all points in the block
         double smoothBlockPoints
         (
-          const int& nX        ,
-          const int& nY        ,
+          const int& blockId   ,
           listPoints2D points  ,
           int* pointsIdOfBlock ,
           double* residual     ,
@@ -72,18 +71,16 @@ private:
         // Restriction operator
         double restriction
         (
-          const int& nX    ,
-          const int& nY    ,
-          double* residual ,
+          const int& blockId   ,
+          double* residual     ,
           const int& numGap = 2
         ) const;
 
         // Prolongation operator
         double prolongation
         (
-          const int& nX    ,
-          const int& nY    ,
-          double* residual ,
+          const int& blockId   ,
+          double* residual     ,
           const int& numGap = 2
         ) const;
 
