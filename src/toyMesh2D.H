@@ -61,10 +61,11 @@ private:
         // Smooth all points in the block
         double smoothBlockPoints
         (
-          const int& nX       ,
-          const int& nY       ,
-          double* coordinates ,
-          double* residual    ,
+          const int& nX        ,
+          const int& nY        ,
+          listPoints2D points  ,
+          int* pointsIdOfBlock ,
+          double* residual     ,
           const int& numGap = 1
         ) const;
 
