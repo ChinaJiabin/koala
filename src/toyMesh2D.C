@@ -187,7 +187,7 @@ void toyMesh2D::getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) co
 
   const int& nX = parBlocks[blockId].n[0];
   const int& nY = parBlocks[blockId].n[1];
-  
+
   // Corner points
   pointsIdOfBlock[0]  = blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID];
   pointsIdOfBlock[nX] = blockLines[LINE_BOTTOM][LINE_POINT_END_ID];
@@ -209,7 +209,7 @@ void toyMesh2D::getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) co
     lineId = abs(blockLines[LINE_RIGHT][2]) - 1;
     for (int i = pointsOnLinesIndex[lineId]; i < pointsOnLinesIndex[lineId + 1]; i++)
       if (blockLines[LINE_RIGHT][2] < 0)
-        pointsIdOfBlock[nX + (i - pointsOnLinesIndex[lineId] + 1)*(nX + 1)] = 
+        pointsIdOfBlock[nX + (i - pointsOnLinesIndex[lineId] + 1)*(nX + 1)] =
         (pointsOnLinesIndex[lineId + 1] - 1) - (i - pointsOnLinesIndex[lineId]);
       else
         pointsIdOfBlock[nX + (i - pointsOnLinesIndex[lineId] + 1)*(nX + 1)] = i;
@@ -241,14 +241,14 @@ void toyMesh2D::getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) co
 
 void toyMesh2D::smoothPoint
 (
-  double* point                 ,                 
-  const double* point_right     ,
-  const double* point_up        , 
-  const double* point_left      ,
-  const double* point_down      ,
-  const double* point_right_up  , 
-  const double* point_up_left   , 
-  const double* point_left_down , 
+  double* point                  ,                 
+  const double* point_right      ,
+  const double* point_up         ,
+  const double* point_left       ,
+  const double* point_down       ,
+  const double* point_right_up   ,
+  const double* point_up_left    ,
+  const double* point_left_down  ,
   const double* point_down_right
 ) const
 {
@@ -286,7 +286,7 @@ double toyMesh2D::smoothBlockPoints
 {
   const int& nX = parBlocks[blockId].n[0];
   const int& nY = parBlocks[blockId].n[1];
-  
+
   int numPointsX     = (nX + 1);
   int numGapPointsX  = numGap*numPointsX;
   int numTotalPoints = numPointsX*(nY + 1);
@@ -297,10 +297,10 @@ double toyMesh2D::smoothBlockPoints
     {
       int idInBlock   = j + i*numPointsX;
       int idInBlock_y = idInBlock + numTotalPoints;
-      
+
       int idInBlock_up   = idInBlock + numGapPointsX;
       int idInBlock_down = idInBlock - numGapPointsX;
-        
+
       // 0. 9 around points address
       int id = pointsIdOfBlock[idInBlock];
 
@@ -349,7 +349,7 @@ double toyMesh2D::restriction
 {
   const int& nX = parBlocks[blockId].n[0];
   const int& nY = parBlocks[blockId].n[1];
-  
+
   int numPointsX     = (nX + 1);
   int numGapPointsX  = numGap*numPointsX;
   int numTotalPoints = numPointsX*(nY + 1);
@@ -409,7 +409,7 @@ double toyMesh2D::prolongation
 {
   const int& nX = parBlocks[blockId].n[0];
   const int& nY = parBlocks[blockId].n[1];
-  
+
   int halfNumGap     = numGap/2.0;
   int numPointsX     = (nX + 1);
   int numTotalPoints = numPointsX*(nY + 1);
@@ -766,7 +766,7 @@ void toyMesh2D::writePoints() const
     {
       const int& nX = parBlocks[blockId].n[0];
       const int& nY = parBlocks[blockId].n[1];
-      
+
       int pointsIdOfBlock[nY + 1][nX + 1];
       getPointsIdOfBlock(blockId, &pointsIdOfBlock[0][0]);
 
@@ -845,12 +845,12 @@ void toyMesh2D::writePoints() const
           smoothPoint
           (
             &points[linePointsId[offset][0]][0]     ,
-            &points[linePointsId[offset][2]][0]     , 
-            &points[linePointsId[offset + 1][0]][0] , 
-            &points[linePointsId[offset][1]][0]     , 
-            &points[linePointsId[offset - 1][0]][0] , 
-            &points[linePointsId[offset + 1][2]][0] , 
-            &points[linePointsId[offset + 1][1]][0] , 
+            &points[linePointsId[offset][2]][0]     ,
+            &points[linePointsId[offset + 1][0]][0] ,
+            &points[linePointsId[offset][1]][0]     ,
+            &points[linePointsId[offset - 1][0]][0] ,
+            &points[linePointsId[offset + 1][2]][0] ,
+            &points[linePointsId[offset + 1][1]][0] ,
             &points[linePointsId[offset - 1][1]][0] ,
             &points[linePointsId[offset - 1][2]][0]
           );

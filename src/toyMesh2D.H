@@ -46,14 +46,14 @@ private:
         */
         void smoothPoint
         (
-          double* point                 ,                 
-          const double* point_right     ,
-          const double* point_up        , 
-          const double* point_left      ,
-          const double* point_down      ,
-          const double* point_right_up  , 
-          const double* point_up_left   , 
-          const double* point_left_down , 
+          double* point                  ,                 
+          const double* point_right      ,
+          const double* point_up         ,
+          const double* point_left       ,
+          const double* point_down       ,
+          const double* point_right_up   ,
+          const double* point_up_left    ,
+          const double* point_left_down  ,
           const double* point_down_right
         ) const;
 
