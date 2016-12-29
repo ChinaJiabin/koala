@@ -285,14 +285,16 @@ void toyMesh2D::smoothPoint
 
 double toyMesh2D::smoothBlockPoints
 (
-  const int& nX        ,
-  const int& nY        ,
+  const int& blockId   ,
   listPoints2D points  ,
   int* pointsIdOfBlock ,
   double* residual     ,
   const int& numGap
 ) const
 {
+  const int& nX = parBlocks[blockId].n[0];
+  const int& nY = parBlocks[blockId].n[1];
+  
   int numPointsX     = (nX + 1);
   int numGapPointsX  = numGap*numPointsX;
   int numTotalPoints = numPointsX*(nY + 1);
@@ -348,12 +350,14 @@ double toyMesh2D::smoothBlockPoints
 
 double toyMesh2D::restriction
 (
-  const int& nX    ,
-  const int& nY    ,
-  double* residual ,
+  const int& blockId ,
+  double* residual   ,
   const int& numGap
 ) const
 {
+  const int& nX = parBlocks[blockId].n[0];
+  const int& nY = parBlocks[blockId].n[1];
+  
   int numPointsX     = (nX + 1);
   int numGapPointsX  = numGap*numPointsX;
   int numTotalPoints = numPointsX*(nY + 1);
@@ -406,12 +410,14 @@ double toyMesh2D::restriction
 
 double toyMesh2D::prolongation
 (
-  const int& nX    ,
-  const int& nY    ,
-  double* residual ,
+  const int& blockId ,
+  double* residual   ,
   const int& numGap
 ) const
 {
+  const int& nX = parBlocks[blockId].n[0];
+  const int& nY = parBlocks[blockId].n[1];
+  
   int halfNumGap     = numGap/2.0;
   int numPointsX     = (nX + 1);
   int numTotalPoints = numPointsX*(nY + 1);
@@ -768,7 +774,7 @@ void toyMesh2D::writePoints() const
     {
       const int& nX = parBlocks[blockId].n[0];
       const int& nY = parBlocks[blockId].n[1];
-
+      
       int pointsIdOfBlock[nX + 1][nY + 1];
       getPointsIdOfBlock(blockId, &pointsIdOfBlock[0][0]);
 
@@ -813,13 +819,13 @@ void toyMesh2D::writePoints() const
       memset(residual, 0, 2*(nY + 1)*(nX + 1)*sizeof(double));
 
       // :1. Smooth on original grid
-      error += smoothBlockPoints(nX, nY, &points[0], &pointsIdOfBlock[0][0], &residual[0][0]);
+      error += smoothBlockPoints(blockId, &points[0], &pointsIdOfBlock[0][0], &residual[0][0]);
 
       // :2. Restriction operation
-      restriction(nX, nY, &residual[0][0]);
+      restriction(blockId, &residual[0][0]);
 
       // :3. Prolongation operation
-      prolongation(nX, nY, &residual[0][0]);
+      prolongation(blockId, &residual[0][0]);
 
       // :4. Update blockPoints
       for (int offsetY = 1; offsetY < nY; offsetY++)
@@ -828,6 +834,7 @@ void toyMesh2D::writePoints() const
             points[pointsIdOfBlock[offsetY][offsetX]][dim] += residual[offsetY + dim*(nY + 1)][offsetX];
 
       // Smooth points on block lines that is not belong to boundary
+      listLines2D blockLines = &lines[4*blockId];
       for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
       {
         int lineId = blockLines[lineIdInBlock][2] - 1;
