@@ -240,23 +240,22 @@ void toyMesh2D::getPointsIdOfBlock(const int& blockId , int* pointsIdOfBlock) co
 
 void toyMesh2D::smoothPoint
 (
-  double& point_x ,
-  double& point_y ,
-  const double& point_x_right     , const double& point_y_right     ,
-  const double& point_x_up        , const double& point_y_up        ,
-  const double& point_x_left      , const double& point_y_left      ,
-  const double& point_x_down      , const double& point_y_down      ,
-  const double& point_x_right_up  , const double& point_y_right_up  ,
-  const double& point_x_up_left   , const double& point_y_up_left   ,
-  const double& point_x_left_down , const double& point_y_left_down ,
-  const double& point_x_down_right, const double& point_y_down_right
+  double* point                 ,                 
+  const double* point_right     ,
+  const double* point_up        , 
+  const double* point_left      ,
+  const double* point_down      ,
+  const double* point_right_up  , 
+  const double* point_up_left   , 
+  const double* point_left_down , 
+  const double* point_down_right
 ) const
 {
-  double delta_x_xi  = point_x_right - point_x_left;
-  double delta_x_eta = point_x_up    - point_x_down;
+  double delta_x_xi  = point_right[0] - point_left[0];
+  double delta_x_eta = point_up[0]    - point_down[0];
 
-  double delta_y_xi  = point_y_right - point_y_left;
-  double delta_y_eta = point_y_up    - point_y_down;
+  double delta_y_xi  = point_right[1] - point_left[1];
+  double delta_y_eta = point_up[1]    - point_down[1];
 
   double alpha = (delta_x_eta * delta_x_eta  + delta_y_eta * delta_y_eta)/4.0;
   double beta  = (delta_x_xi  * delta_x_eta  + delta_y_xi  * delta_y_eta)/8.0;
@@ -264,23 +263,15 @@ void toyMesh2D::smoothPoint
 
   double sumAlphaGamma = 2*(alpha + gamma);
 
-  point_x = (
-    alpha*(point_x_left + point_x_right) +
-    gamma*(point_x_down + point_x_up)    -
-    beta*(
-      (point_x_right_up   + point_x_left_down) -
-      (point_x_down_right + point_x_up_left)
-    )
-  )/sumAlphaGamma;
-
-  point_y = (
-    alpha*(point_y_left + point_y_right) +
-    gamma*(point_y_down + point_y_up)    -
-    beta*(
-      (point_y_right_up   + point_y_left_down) -
-      (point_y_down_right + point_y_up_left)
-    )
-  )/sumAlphaGamma;
+  for (int dim = 0; dim < 2; dim++)
+    point[dim] = (
+      alpha*(point_left[dim] + point_right[dim]) +
+      gamma*(point_down[dim] + point_up[dim])    -
+      beta*(
+        (point_right_up[dim]   + point_left_down[dim]) -
+        (point_down_right[dim] + point_up_left[dim])
+      )
+    )/sumAlphaGamma;
 }
 
 double toyMesh2D::smoothBlockPoints
@@ -329,15 +320,15 @@ double toyMesh2D::smoothBlockPoints
 
       smoothPoint
       (
-        points[id][0]           , points[id][1]            ,
-        points[id_right][0]     , points[id_right][1]      ,
-        points[id_up][0]        , points[id_up][1]         ,
-        points[id_left][0]      , points[id_left][1]       ,
-        points[id_down][0]      , points[id_down][1]       ,
-        points[id_right_up][0]  , points[id_right_up][1]   ,
-        points[id_up_left][0]   , points[id_up_left][1]    ,
-        points[id_left_down][0] , points[id_left_down][1]  ,
-        points[id_down_right][0], points[id_down_right][1]
+        &points[id][0]            ,
+        &points[id_right][0]      ,
+        &points[id_up][0]         ,
+        &points[id_left][0]       ,
+        &points[id_down][0]       ,
+        &points[id_right_up][0]   ,
+        &points[id_up_left][0]    ,
+        &points[id_left_down][0]  ,
+        &points[id_down_right][0]
       );
 
       residual[idInBlock]   = points[id][0] - pointOld_x;
@@ -852,15 +843,15 @@ void toyMesh2D::writePoints() const
 
           smoothPoint
           (
-            points[linePointsId[offset][0]][0]    , points[linePointsId[offset][0]][1]     ,
-            points[linePointsId[offset][2]][0]    , points[linePointsId[offset][2]][1]     ,
-            points[linePointsId[offset + 1][0]][0], points[linePointsId[offset + 1][0]][1] ,
-            points[linePointsId[offset][1]][0]    , points[linePointsId[offset][1]][1]     ,
-            points[linePointsId[offset - 1][0]][0], points[linePointsId[offset - 1][0]][1] ,
-            points[linePointsId[offset + 1][2]][0], points[linePointsId[offset + 1][2]][1] ,
-            points[linePointsId[offset + 1][1]][0], points[linePointsId[offset + 1][1]][1] ,
-            points[linePointsId[offset - 1][1]][0], points[linePointsId[offset - 1][1]][1] ,
-            points[linePointsId[offset - 1][2]][0], points[linePointsId[offset - 1][2]][1]
+            &points[linePointsId[offset][0]][0]     ,
+            &points[linePointsId[offset][2]][0]     , 
+            &points[linePointsId[offset + 1][0]][0] , 
+            &points[linePointsId[offset][1]][0]     , 
+            &points[linePointsId[offset - 1][0]][0] , 
+            &points[linePointsId[offset + 1][2]][0] , 
+            &points[linePointsId[offset + 1][1]][0] , 
+            &points[linePointsId[offset - 1][1]][0] ,
+            &points[linePointsId[offset - 1][2]][0]
           );
 
           double residualX = pointOldX - points[linePointsId[offset][0]][0];
