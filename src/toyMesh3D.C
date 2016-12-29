@@ -244,6 +244,45 @@ toyMesh2D::toyMesh2D
     }
 }
 
+void toyMesh3D::getPointsIdOfBlock(const int& blockId, int* pointsIdOfBlock) const
+{
+  const int& nX = parBlocks[blockId].n[0];
+  const int& nY = parBlocks[blockId].n[1];
+  const int& nZ = parBlocks[blockId].n[2];
+  
+  listLines3D blockLines = &lines[12*blockId];
+  
+  // Corners points id
+  
+  // Lines points id
+  
+  // Faces points id
+  
+  // Internal points id
+  for (int offsetZ = 1; offsetZ < nZ; offsetZ++)
+    for (int offsetY = 1; offsetY < nY; offsetY++)
+      for (int offsetX = 1; offsetX < nX; offsetX++)
+        pointsIdOfBlock[offsetZ][offsetY][offsetX] = pointsInBlocksIndex[blockId] +
+                                                     (offsetX - 1)                +       
+                                                     (offsetY - 1)*(nX - 1)       +
+                                                     (offsetZ - 1)*(nX - 1)*(nY - 1);
+  
+  // Write cells id
+  for (int offsetZ = 0; offsetZ < nZ; offsetZ++)
+    for (int offsetY = 0; offsetY < nY; offsetY++)
+      for (int offsetX = 0; offsetX < nX; offsetX++)
+      {
+        file << pointsIdOfBlock[offsetZ][offsetY][offsetX]             << " ";
+        file << pointsIdOfBlock[offsetZ][offsetY][offsetX + 1]         << " ";
+        file << pointsIdOfBlock[offsetZ][offsetY + 1][offsetX + 1]     << " ";
+        file << pointsIdOfBlock[offsetZ][offsetY + 1][offsetX]         << " ";
+        file << pointsIdOfBlock[offsetZ + 1][offsetY][offsetX]         << " ";
+        file << pointsIdOfBlock[offsetZ + 1][offsetY][offsetX + 1]     << " ";
+        file << pointsIdOfBlock[offsetZ + 1][offsetY + 1][offsetX + 1] << " ";
+        file << pointsIdOfBlock[offsetZ + 1][offsetY + 1][offsetX]     << "\n";
+      }
+}
+  
 void toyMesh3D::writePoints() const
 {
 }
