@@ -775,7 +775,7 @@ void toyMesh2D::writePoints() const
       const int& nX = parBlocks[blockId].n[0];
       const int& nY = parBlocks[blockId].n[1];
       
-      int pointsIdOfBlock[nX + 1][nY + 1];
+      int pointsIdOfBlock[nY + 1][nX + 1];
       getPointsIdOfBlock(blockId, &pointsIdOfBlock[0][0]);
 
       // Set initial value by calculating the intersection point of two lines
