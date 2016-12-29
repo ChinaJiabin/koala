@@ -327,22 +327,21 @@ double toyMesh2D::smoothBlockPoints
 
       smoothPoint
       (
-        coordinates[id_x] ,
-        coordinates[id_y] ,
-        coordinates[id_x_right]     , coordinates[id_x_right + numTotalPoints] ,
-        coordinates[id_x_up]        , coordinates[id_x_up    + numTotalPoints] ,
-        coordinates[id_x_left]      , coordinates[id_x_left  + numTotalPoints] ,
-        coordinates[id_x_down]      , coordinates[id_x_down  + numTotalPoints] ,
-        coordinates[id_x_right_up]  , coordinates[id_x_right_up   + numTotalPoints] ,
-        coordinates[id_x_up_left]   , coordinates[id_x_up_left    + numTotalPoints] ,
-        coordinates[id_x_left_down] , coordinates[id_x_left_down  + numTotalPoints] ,
-        coordinates[id_x_down_right], coordinates[id_x_down_right + numTotalPoints]
+        points[id][0]           , points[id][1]            ,
+        points[id_right][0]     , points[id_right][1]      ,
+        points[id_up][0]        , points[id_up][1]         ,
+        points[id_left][0]      , points[id_left][1]       ,
+        points[id_down][0]      , points[id_down][1]       ,
+        points[id_right_up][0]  , points[id_right_up][1]   ,
+        points[id_up_left][0]   , points[id_up_left][1]    ,
+        points[id_left_down][0] , points[id_left_down][1]  ,
+        points[id_down_right][0], points[id_down_right][1]
       );
 
-      residual[id_x] = coordinates[id_x] - coordinateOld_x;
-      residual[id_y] = coordinates[id_y] - coordinateOld_y;
+      residual[idInBlock]   = points[id][0] - pointOld_x;
+      residual[idInBlock_y] = points[id][1] - pointOld_y;
 
-      error += residual[id_x]*residual[id_x] + residual[id_y]*residual[id_y];
+      error += residual[idInBlock]*residual[idInBlock] + residual[idInBlock_y]*residual[idInBlock_y];
     }
   return error;
 }
@@ -770,91 +769,36 @@ void toyMesh2D::writePoints() const
       const int& nX = parBlocks[blockId].n[0];
       const int& nY = parBlocks[blockId].n[1];
 
-      listLines2D blockLines   = &lines[4*blockId];
-      listPoints2D blockPoints = &points[pointsInBlocksIndex[blockId]];
-      double coordinates[2*(nY + 1)][(nX + 1)];
-
-      // Set boundary points
-      // Bottom
-      const double* bottom = &points[pointsOnLinesIndex[abs(blockLines[LINE_BOTTOM][2]) - 1]][0];
-      if (blockLines[LINE_BOTTOM][2] >= 0)
-        for (int offset = 1; offset < nX; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[dim*(nY + 1)][offset] = bottom[dim + 2*(offset - 1)];
-      else
-        for (int offset = 1; offset < nX; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[dim*(nY + 1)][offset] = bottom[dim + 2*(nX - 1 - offset)];
-
-      // Right
-      const double* right = &points[pointsOnLinesIndex[abs(blockLines[LINE_RIGHT][2]) - 1]][0];
-      if (blockLines[LINE_RIGHT][2] >= 0)
-        for (int offset = 1; offset < nY; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[offset + dim*(nY + 1)][nX] = right[dim + 2*(offset - 1)];
-      else
-        for (int offset = 1; offset < nY; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[offset + dim*(nY + 1)][nX] = right[dim + 2*(nY - 1 - offset)];
-
-      // Top
-      const double* top = &points[pointsOnLinesIndex[abs(blockLines[LINE_TOP][2]) - 1]][0];
-      if (blockLines[LINE_TOP][2] >= 0)
-        for (int offset = 1; offset < nX; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[(dim + 1)*(nY + 1) - 1][offset] = top[dim + 2*(nX - 1 - offset)];
-      else
-        for (int offset = 1; offset < nX; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[(dim + 1)*(nY + 1) - 1][offset] = top[dim + 2*(offset - 1)];
-
-      // Left
-      const double* left = &points[pointsOnLinesIndex[abs(blockLines[LINE_LEFT][2]) - 1]][0];
-      if (blockLines[LINE_LEFT][2] >= 0)
-        for (int offset = 1; offset < nY; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[offset + dim*(nY + 1)][0] = left[dim + 2*(nY - 1 - offset)];
-      else
-        for (int offset = 1; offset < nY; offset++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[offset + dim*(nY + 1)][0] = left[dim + 2*(offset - 1)];
-
-      // Four corner points
-      for (int dim = 0; dim < 2; dim++)
-      {
-        coordinates[dim*(nY + 1)][0]       = points[blockLines[LINE_BOTTOM][LINE_POINT_FIRST_ID]][dim];
-        coordinates[dim*(nY + 1)][nX]      = points[blockLines[LINE_BOTTOM][LINE_POINT_END_ID]][dim];
-        coordinates[nY + dim*(nY + 1)][nX] = points[blockLines[LINE_TOP][LINE_POINT_FIRST_ID]][dim];
-        coordinates[nY + dim*(nY + 1)][0]  = points[blockLines[LINE_TOP][LINE_POINT_END_ID]][dim];
-      }
+      int pointsIdOfBlock[nX + 1][nY + 1];
+      getPointsIdOfBlock(blockId, &pointsIdOfBlock[0][0]);
 
       // Set initial value by calculating the intersection point of two lines
       if (numIter == -1)
       {
         for (int offsetY = 1; offsetY < nY; offsetY++)
         {
-          const double& x1 = coordinates[offsetY][0];
-          const double& y1 = coordinates[offsetY + (nY + 1)][0];
+          const double& x1 = points[pointsIdOfBlock[offsetY][0]][0];
+          const double& y1 = points[pointsIdOfBlock[offsetY][0]][1];
 
-          const double& x2 = coordinates[offsetY][nX];
-          const double& y2 = coordinates[offsetY + (nY + 1)][nX];
+          const double& x2 = points[pointsIdOfBlock[offsetY][nX]][0];
+          const double& y2 = points[pointsIdOfBlock[offsetY][nX]][1];
 
           for (int offsetX = 1; offsetX < nX; offsetX++)
           {
-            const double& x3 = coordinates[0][offsetY];
-            const double& y3 = coordinates[nY + 1][offsetY];
+            const double& x3 = points[pointsIdOfBlock[0][offsetX]][0];
+            const double& y3 = points[pointsIdOfBlock[0][offsetX]][1];
 
-            const double& x4 = coordinates[nY][offsetY];
-            const double& y4 = coordinates[nY + (nY + 1)][offsetY];
+            const double& x4 = points[pointsIdOfBlock[nY][offsetX]][0];
+            const double& y4 = points[pointsIdOfBlock[nY][offsetX]][1];
 
             double denominator = (x1 -x2)*(y3 - y4) + (x3 -x4)*(y2 - y1);
 
-            blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][0] = (
+            points[pointsIdOfBlock[offsetY][offsetX]][0] = (
               x1*x3*(y2 - y4) + x2*x3*(y4 - y1) +
               x1*x4*(y3 - y2) + x2*x4*(y1 - y3)
             )/denominator;
 
-            blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][1] = (
+            points[pointsIdOfBlock[offsetY][offsetX]][1] = (
               y1*y3*(x4 - x2) + y2*y3*(x1 - x4) +
               y1*y4*(x2 - x3) + y2*y4*(x3 - x1)
             )/denominator;
@@ -863,20 +807,13 @@ void toyMesh2D::writePoints() const
         continue;
       }
 
-      // Initialize coordinates
-      for (int offsetY = 1; offsetY < nY; offsetY++)
-        for (int offsetX = 1; offsetX < nX; offsetX++)
-          for (int dim = 0; dim < 2; dim++)
-            coordinates[offsetY + dim*(nY + 1)][offsetX] =
-              blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][dim];
-
       // Key part
       // :0. Initialize residual
       double residual[2*(nY + 1)][nX + 1];
       memset(residual, 0, 2*(nY + 1)*(nX + 1)*sizeof(double));
 
       // :1. Smooth on original grid
-      error += smoothBlockPoints(nX, nY, &coordinates[0][0], &residual[0][0]);
+      error += smoothBlockPoints(nX, nY, &points[0], &pointsIdOfBlock[0][0], &residual[0][0]);
 
       // :2. Restriction operation
       restriction(nX, nY, &residual[0][0]);
@@ -888,8 +825,7 @@ void toyMesh2D::writePoints() const
       for (int offsetY = 1; offsetY < nY; offsetY++)
         for (int offsetX = 1; offsetX < nX; offsetX++)
           for (int dim = 0; dim < 2; dim++)
-            blockPoints[(offsetX - 1) + (offsetY - 1)*(nX - 1)][dim] =
-              coordinates[offsetY + dim*(nY + 1)][offsetX] + residual[offsetY + dim*(nY + 1)][offsetX];
+            points[pointsIdOfBlock[offsetY][offsetX]][dim] += residual[offsetY + dim*(nY + 1)][offsetX];
 
       // Smooth points on block lines that is not belong to boundary
       for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
