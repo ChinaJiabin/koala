@@ -285,10 +285,11 @@ void toyMesh2D::smoothPoint
 
 double toyMesh2D::smoothBlockPoints
 (
-  const int& nX       ,
-  const int& nY       ,
-  double* coordinates ,
-  double* residual    ,
+  const int& nX        ,
+  const int& nY        ,
+  listPoints2D points  ,
+  int* pointsIdOfBlock ,
+  double* residual     ,
   const int& numGap
 ) const
 {
@@ -300,24 +301,29 @@ double toyMesh2D::smoothBlockPoints
   for (int i = numGap; i + numGap <= nY; i += numGap)
     for (int j = numGap; j + numGap <= nX; j += numGap)
     {
+      int idInBlock   = j + i*numPointsX;
+      int idInBlock_y = idInBlock + numTotalPoints;
+      
+      int idInBlock_up   = idInBlock + numGapPointsX;
+      int idInBlock_down = idInBlock - numGapPointsX;
+        
       // 0. 9 around points address
-      int id_x = j + i*numPointsX;
-      int id_y = id_x + numTotalPoints;
+      int id = pointsIdOfBlock[idInBlock];
 
-      int id_x_right = id_x + numGap;
-      int id_x_left  = id_x - numGap;
-      int id_x_up    = id_x + numGapPointsX;
-      int id_x_down  = id_x - numGapPointsX;
+      int id_right = pointsIdOfBlock[idInBlock + numGap];
+      int id_left  = pointsIdOfBlock[idInBlock - numGap];
+      int id_up    = pointsIdOfBlock[idInBlock_up];
+      int id_down  = pointsIdOfBlock[idInBlock_down];
 
-      int id_x_right_up   = id_x_up + numGap;
-      int id_x_up_left    = id_x_up - numGap;
-      int id_x_left_down  = id_x_down - numGap;
-      int id_x_down_right = id_x_down + numGap;
+      int id_right_up   = pointsIdOfBlock[idInBlock_up + numGap];
+      int id_up_left    = pointsIdOfBlock[idInBlock_up - numGap];
+      int id_left_down  = pointsIdOfBlock[idInBlock_down - numGap];
+      int id_down_right = pointsIdOfBlock[idInBlock_down + numGap];
 
 
       // Update
-      double coordinateOld_x = coordinates[id_x];
-      double coordinateOld_y = coordinates[id_y];
+      double pointOld_x = points[id][0];
+      double pointOld_y = points[id][1];
 
       smoothPoint
       (
