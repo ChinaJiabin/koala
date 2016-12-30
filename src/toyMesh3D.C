@@ -347,6 +347,127 @@ void toyMesh3D::getPointsIdOfBlock(const int& blockId, int* pointsIdOfBlock) con
       pointsIdOfBlock[offset] = pointsOnLinesIndex[idLine + 1] - offset;
     }
   
+  idLine = abs(blockLines[LINE_BOTTOM_1][2]) - 1;
+  if (blockLinesSign[LINE_BOTTOM_1])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[(linePointId - pointsOnLinesIndex[idLine] + 1)*(nX + 1) + nX] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[offset*(nX + 1) + nX] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
+  
+  idLine = abs(blockLines[LINE_BOTTOM_2][2]) - 1;
+  if (blockLinesSign[LINE_BOTTOM_2])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      {
+        int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+        pointsIdOfBlock[nY*(nX + 1) + offset] = pointsOnLinesIndex[idLine + 1] - offset;
+      }
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[nY*(nX + 1) + (linePointId - pointsOnLinesIndex[idLine] + 1)] = linePointId;
+  
+  idLine = abs(blockLines[LINE_BOTTOM_3][2]) - 1;
+  if (blockLinesSign[LINE_BOTTOM_3])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      {
+        int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+        pointsIdOfBlock[offset*(nX + 1)] = pointsOnLinesIndex[idLine + 1] - offset;
+      }
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[(linePointId - pointsOnLinesIndex + 1)*(nX + 1)] = linePointId; 
+  
+  idLine = abs(blockLines[LINE_MIDDLE_0][2]) - 1;
+  if (blockLinesSign[LINE_MIDDLE_0])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[(linePointId - pointsOnLinesIndex[idLine] + 1)*(nY + 1)*(nX + 1) + nX] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[offset*(nY + 1)*(nX + 1) + nX] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
+  
+  idLine = abs(blockLines[LINE_MIDDLE_1][2]) - 1;
+  if (blockLinesSign[LINE_MIDDLE_1])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[(linePointId - pointsOnLinesIndex[idLine] + 1)*(nY + 1)*(nX + 1) + nY*(nX + 1) + nX] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[offset*(nY + 1)*(nX + 1) + nY*(nX + 1) + nX] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
+  
+  idLine = abs(blockLines[LINE_MIDDLE_2][2]) - 1;
+  if (blockLinesSign[LINE_MIDDLE_2])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[(linePointId - pointsOnLinesIndex[idLine] + 1)*(nY + 1)*(nX + 1) + nY*(nX + 1)] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[offset*(nY + 1)*(nX + 1) + nY*(nX + 1)] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
+  
+  idLine = abs(blockLines[LINE_MIDDLE_3][2]) - 1;
+  if (blockLinesSign[LINE_MIDDLE_3])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + (linePointId - pointsOnLinesIndex[idLine] + 1)] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + offset] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
+  
+  idLine = abs(blockLines[LINE_TOP_0][2]) - 1;
+  if (blockLinesSign[LINE_TOP_0])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + (linePointId - pointsOnLinesIndex[idLine] + 1)] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + offset] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
+  
+  idLine = abs(blockLines[LINE_TOP_1][2]) - 1;
+  if (blockLinesSign[LINE_TOP_1])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + (linePointId - pointsOnLinesIndex[idLine] + 1)*(nX + 1) + nX] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + offset*(nX + 1) + nX] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
+  
+  idLine = abs(blockLines[LINE_TOP_2][2]) - 1;
+  if (blockLinesSign[LINE_TOP_2])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      {
+        int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+        pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nY*(nX + 1) + offset] = pointsOnLinesIndex[idLine + 1] - offset;
+      }
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nY*(nX + 1) + (linePointId - pointsOnLinesIndex[idLine] + 1)] = linePointId;
+  
+  idLine = abs(blockLines[LINE_TOP_3][2]) - 1;
+  if (blockLinesSign[LINE_TOP_3])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      {
+        int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+        pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + offset*(nX + 1)] = pointsOnLinesIndex[idLine + 1] - offset;
+      }
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + (linePointId - pointsOnLinesIndex[idLine] + 1)*(nX + 1)] = linePointId;
+                                                              
   // Faces points id
   
   // Internal points id
