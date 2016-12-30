@@ -15,6 +15,21 @@ parBlock3D::parBlock3D()
 const int LINE_POINT_FIRST _ID = 0;
 const int LINE_POINT_END_ID    = 1;
 
+const int LINE_BOTTOM_0 = 0;
+const int LINE_BOTTOM_1 = 1; 
+const int LINE_BOTTOM_2 = 2;  
+const int LINE_BOTTOM_3 = 3;   
+  
+const int LINE_MIDDLE_0 = 4;
+const int LINE_MIDDLE_1 = 5; 
+const int LINE_MIDDLE_2 = 6;  
+const int LINE_MIDDLE_3 = 7;   
+  
+const int LINE_TOP_0 = 8;
+const int LINE_TOP_1 = 9; 
+const int LINE_TOP_2 = 10;  
+const int LINE_TOP_3 = 11;    
+  
 const int faceLineId[6][4] =
 {
   {0, 3,  2,  1} ,
@@ -252,6 +267,19 @@ void toyMesh3D::getPointsIdOfBlock(const int& blockId, int* pointsIdOfBlock) con
   
   listLines3D blockLines = &lines[12*blockId];
   
+  bool blockLinesSign[12];
+  for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
+    blockLinesSign[lineIdInBlock] = blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)%4][0] ||
+                                    blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)%4][1];
+  
+  for (int lineIdInBlock = 4; lineIdInBlock < 8; lineIdInBlock++)
+    blockLinesSign[lineIdInBlock] = blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)][0] ||
+                                    blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)][1];
+  
+  for (int lineIdInBlock = 8; lineIdInBlock < 12; lineIdInBlock++)
+    blockLinesSign[lineIdInBlock] = blockLines[lineIdInBlock][1] == blockLines[8 + (lineIdInBlock + 1)%4][0] ||
+                                    blockLines[lineIdInBlock][1] == blockLines[8 + (lineIdInBlock + 1)%4][1];
+ 
   // Corners points id
   
   // Lines points id
