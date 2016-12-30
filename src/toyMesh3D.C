@@ -12,8 +12,8 @@ parBlock3D::parBlock3D()
   n    = new int[3]();
 }
 
-const int LINE_POINT_FIRST _ID = 0;
-const int LINE_POINT_END_ID    = 1;
+const int LINE_POINT_FIRST_ID = 0;
+const int LINE_POINT_END_ID   = 1;
 
 const int LINE_BOTTOM_0 = 0;
 const int LINE_BOTTOM_1 = 1; 
@@ -32,14 +32,21 @@ const int LINE_TOP_3 = 11;
   
 const int faceLineId[6][4] =
 {
-  {0, 3,  2,  1} ,
-  {8, 9, 10, 11} ,
-  {1, 6,  9,  5} ,
-  {3, 4, 11,  7} ,
-  {0, 5,  8,  4} ,
-  {2, 7, 10,  6}
+  {LINE_BOTTOM_0, LINE_BOTTOM_3,  LINE_BOTTOM_2,  LINE_BOTTOM_1} ,
+  {LINE_TOP_0   , LINE_TOP_1   ,  LINE_TOP_2   ,  LINE_TOP_3   } ,
+  {LINE_BOTTOM_1, LINE_MIDDLE_2,  LINE_TOP_1   ,  LINE_MIDDLE_1} ,
+  {LINE_BOTTOM_3, LINE_MIDDLE_0,  LINE_TOP_3   ,  LINE_MIDDLE_3} ,
+  {LINE_BOTTOM_0, LINE_MIDDLE_1,  LINE_TOP_0   ,  LINE_MIDDLE_0} ,
+  {LINE_BOTTOM_2, LINE_MIDDLE_3,  LINE_TOP_2   ,  LINE_MIDDLE_2}
 };
 
+const int FACE_BOTTOM = 0;
+const int FACE_TOP    = 1;
+const int FACE_RIGHT  = 2;
+const int FACE_LEFT   = 3;
+const int FACE_FRONT  = 4;
+const int FACE_BEHIND = 5;
+  
 toyMesh2D::toyMesh2D
 (
   const parRun& Run_         ,
@@ -269,16 +276,19 @@ void toyMesh3D::getPointsIdOfBlock(const int& blockId, int* pointsIdOfBlock) con
   
   bool blockLinesSign[12];
   for (int lineIdInBlock = 0; lineIdInBlock < 4; lineIdInBlock++)
-    blockLinesSign[lineIdInBlock] = blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)%4][0] ||
-                                    blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)%4][1];
+    blockLinesSign[lineIdInBlock] = 
+      blockLines[lineIdInBlock][LINE_POINT_END_ID] == blockLines[(lineIdInBlock + 1)%4][LINE_POINT_FIRST_ID] ||
+      blockLines[lineIdInBlock][LINE_POINT_END_ID] == blockLines[(lineIdInBlock + 1)%4][LINE_POINT_END_ID];
   
   for (int lineIdInBlock = 4; lineIdInBlock < 8; lineIdInBlock++)
-    blockLinesSign[lineIdInBlock] = blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)][0] ||
-                                    blockLines[lineIdInBlock][1] == blockLines[(lineIdInBlock + 1)][1];
+    blockLinesSign[lineIdInBlock] = 
+      blockLines[lineIdInBlock][LINE_POINT_END_ID] == blockLines[(lineIdInBlock + 4)][LINE_POINT_FIRST_ID] ||
+      blockLines[lineIdInBlock][LINE_POINT_END_ID] == blockLines[(lineIdInBlock + 4)][LINE_POINT_END_ID];
   
   for (int lineIdInBlock = 8; lineIdInBlock < 12; lineIdInBlock++)
-    blockLinesSign[lineIdInBlock] = blockLines[lineIdInBlock][1] == blockLines[8 + (lineIdInBlock + 1)%4][0] ||
-                                    blockLines[lineIdInBlock][1] == blockLines[8 + (lineIdInBlock + 1)%4][1];
+    blockLinesSign[lineIdInBlock] = 
+      blockLines[lineIdInBlock][LINE_POINT_END_ID] == blockLines[8 + (lineIdInBlock + 1)%4][LINE_POINT_FIRST_ID] ||
+      blockLines[lineIdInBlock][LINE_POINT_END_ID] == blockLines[8 + (lineIdInBlock + 1)%4][LINE_POINT_END_ID];
  
   // Corners points id
   
