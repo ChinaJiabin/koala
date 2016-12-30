@@ -291,6 +291,16 @@ void toyMesh3D::getPointsIdOfBlock(const int& blockId, int* pointsIdOfBlock) con
       blockLines[lineIdInBlock][LINE_POINT_END_ID] == blockLines[8 + (lineIdInBlock + 1)%4][LINE_POINT_END_ID];
  
   // Corners points id
+  if (blockLinesSign[LINE_BOTTOM_0])
+  { 
+    pointsIdOfBlock[0]  = blockLines[LINE_BOTTOM_0][LINE_POINT_FIRST_ID];
+    pointsIdOfBlock[nX] = blockLines[LINE_BOTTOM_0][LINE_POINT_END_ID];    
+  }
+  else
+  {
+    pointsIdOfBlock[0]  = blockLines[LINE_BOTTOM_0][LINE_POINT_END_ID];
+    pointsIdOfBlock[nX] = blockLines[LINE_BOTTOM_0][LINE_POINT_FIRST_ID];    
+  }
   
   // Lines points id
   
