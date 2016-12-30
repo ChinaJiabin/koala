@@ -302,7 +302,50 @@ void toyMesh3D::getPointsIdOfBlock(const int& blockId, int* pointsIdOfBlock) con
     pointsIdOfBlock[nX] = blockLines[LINE_BOTTOM_0][LINE_POINT_FIRST_ID];    
   }
   
+  if (blockLinesSign[LINE_BOTTOM_2])
+  { 
+    pointsIdOfBlock[nY*(nX + 1)]      = blockLines[LINE_BOTTOM_2][LINE_POINT_END_ID];
+    pointsIdOfBlock[nY*(nX + 1) + nX] = blockLines[LINE_BOTTOM_2][LINE_POINT_FIRST_ID];    
+  }
+  else
+  {
+    pointsIdOfBlock[nY*(nX + 1)]      = blockLines[LINE_BOTTOM_2][LINE_POINT_FIRST_ID];
+    pointsIdOfBlock[nY*(nX + 1) + nX] = blockLines[LINE_BOTTOM_2][LINE_POINT_END_ID];    
+  }
+  
+  if (blockLinesSign[LINE_TOP_0])
+  { 
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1)]      = blockLines[LINE_TOP_0][LINE_POINT_FIRST_ID];
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nX] = blockLines[LINE_TOP_0][LINE_POINT_END_ID];    
+  }
+  else
+  {
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1)]      = blockLines[LINE_TOP_0][LINE_POINT_END_ID];
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nX] = blockLines[LINE_TOP_0][LINE_POINT_FIRST_ID];    
+  }
+  
+  if (blockLinesSign[LINE_TOP_2])
+  { 
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nY*(nX + 1)]      = blockLines[LINE_TOP_2][LINE_POINT_END_ID];
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nY*(nX + 1) + nX] = blockLines[LINE_TOP_2][LINE_POINT_FIRST_ID];    
+  }
+  else
+  {
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nY*(nX + 1)]      = blockLines[LINE_TOP_2][LINE_POINT_FIRST_ID];
+    pointsIdOfBlock[nZ*(nY + 1)*(nX + 1) + nY*(nX + 1) + nX] = blockLines[LINE_TOP_2][LINE_POINT_END_ID];    
+  }
+  
   // Lines points id
+  int idLine = abs(blockLines[LINE_BOTTOM_0][2]) - 1;
+  if (blockLinesSign[LINE_BOTTOM_0])
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+      pointsIdOfBlock[linePointId - pointsOnLinesIndex[idLine] + 1] = linePointId;
+  else
+    for (int linePointId = pointsOnLinesIndex[idLine]; linePointId < pointsOnLinesIndex[idLine + 1]; linePointId++)
+    {
+      int offset = linePointId - pointsOnLinesIndex[idLine] + 1;
+      pointsIdOfBlock[offset] = pointsOnLinesIndex[idLine + 1] - offset;
+    }
   
   // Faces points id
   
